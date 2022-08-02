@@ -1,0 +1,5 @@
+Matiere chp fichable fait
+MA0913 1 0 0
+MA0913 2 1 0
+MA0914 1 0 1
+MA0914 2 0 0
