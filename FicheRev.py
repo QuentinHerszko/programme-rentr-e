@@ -7,6 +7,12 @@ import numpy as np
 def listMat():
     return ["MA0913","MA0914","SEP0921","SEP0922","MA0934","MA0944","MA0944","CHPS0703","AN0904","MA0953"]
 
+###Action sur les boutons###
+
+def ActionBouton(fenetre,variable):
+    variable.set(1)
+    fenetre.destroy()
+
 ###Chargement des données###
 
 def loadCours():
@@ -104,35 +110,37 @@ def helpChp():
     Label(l3,text="Le bouton 'Pas de fiche' permet de désigné si le chapitre n'as pas \n besoin de fiche. \n Si coché, ce chapitre ne sera pas proposé en fiche de révision.",justify=LEFT).pack(padx=[0,30])
     Button(aide,text='OK',command=aide.destroy).pack(pady=5)
 
-def CancelChp(selec,annule):
-    annule.set(1)
-    selec.destroy()
-
 def insertChp():
-    while(1):
-        selec = Tk()
-        l = LabelFrame(selec, text="Entrée du chapitre:")
-        l.pack(side=TOP,padx=25,pady=[15,5])
-        chap = StringVar()     #Nb du chapitre
-        matiere = StringVar()  #Matière (ex:MA0913) 
-        fichable = IntVar()    #Fiche à faire ou non? (0:oui ; 1:non)
-        annule = IntVar()      #Permet de savoir si on a annulé l'action
-        chap.set("Chapitre")
-        matiere.set("Matière")
-        Entry(l,textvariable=matiere).pack(side=LEFT)
-        Entry(l,textvariable=chap).pack(side=LEFT)
-        Checkbutton(l,text="Pas de fiche",variable=fichable).pack(side=LEFT)
-        Button(selec,text="Annuler",command=lambda: CancelChp(selec,annule),fg="red").pack(side=LEFT,padx=[25,5],pady=5)
-        Button(selec,text="Aide",command=helpChp).pack(side=LEFT)
-        Button(selec,text="Enregistrer",command=selec.destroy,fg="green").pack(side=RIGHT,padx=25,pady=5)
-        selec.mainloop()
-        if (annule.get() == 1):
-            break
-        verif = verifChp(matiere.get())
-        if (verif == 1):
-            break
-    if annule.get() == 0:
-        return [matiere.get(),chap.get(),fichable.get()]
+    selec = Tk()
+    l = LabelFrame(selec, text="Entrée du chapitre:")
+    l.pack(side=TOP,padx=25,pady=[15,5])
+    chap = StringVar()     #Nb du chapitre
+    matiere = StringVar()  #Matière (ex:MA0913) 
+    fichable = IntVar()    #Fiche à faire ou non? (0:oui ; 1:non)
+    enregistrer = IntVar()
+    chap.set("Chapitre")
+    matiere.set("Matière")
+    Entry(l,textvariable=matiere).pack(side=LEFT)
+    Entry(l,textvariable=chap).pack(side=LEFT)
+    Checkbutton(l,text="Pas de fiche",variable=fichable).pack(side=LEFT)
+    Button(selec,text="Annuler",command=selec.destroy,fg="red").pack(side=LEFT,padx=[25,5],pady=5)
+    Button(selec,text="Aide",command=helpChp).pack(side=LEFT)
+    Button(selec,text="Enregistrer",command=lambda: ActionBouton(selec,enregistrer),fg="green").pack(side=RIGHT,padx=25,pady=5)
+    selec.mainloop()
+    if enregistrer.get() == 1:
+        verif = 0
+        while(verif == 0):
+            verif = verifChp(matiere.get())
+            if not(verif == 1):
+                insert = insertChp()
+                if insert == None:
+                    break 
+                else:
+                    matiere.set(insert[0])
+                    chap.set(insert[1])
+                    fichable.set(insert[2])
+        if verif == 1:
+            return [matiere.get(),chap.get(),fichable.get()]
 
 ###Ajout fiches###
 
@@ -147,7 +155,7 @@ def AjoutFiche(Cours):
             Checkbutton(l,text="{}, chapitre {}".format(Cours[i][0],Cours[i][1]),variable=checklist[i],justify=LEFT).pack(padx=[5,50])
     valider = IntVar()
     Button(selec,text="Cancel",fg='red',command=selec.destroy).pack(side=LEFT,padx=5,pady=5)
-    Button(selec,text="Valider",fg='green',command=lambda: CancelChp(selec,valider)).pack(side=RIGHT,padx=5,pady=5)
+    Button(selec,text="Valider",fg='green',command=lambda: ActionBouton(selec,valider)).pack(side=RIGHT,padx=5,pady=5)
     selec.mainloop()
     if valider.get() == 1:
         Id = []
@@ -172,15 +180,14 @@ def suppChp(Cours):
         Checkbutton(l,text="{}, chapitre {}".format(Cours[i][0],Cours[i][1]),variable=checklist[i],justify=LEFT).pack(padx=[5,50])
     supp = IntVar()
     Button(selec,text="Cancel",fg='red',command=selec.destroy).pack(side=LEFT,padx=5,pady=5)
-    Button(selec,text="Supprimer",command=lambda: CancelChp(selec,supp)).pack(side=RIGHT,padx=5,pady=5)
+    Button(selec,text="Supprimer",command=lambda: ActionBouton(selec,supp)).pack(side=RIGHT,padx=5,pady=5)
     selec.mainloop()
     if supp.get() == 1:
         CoursF = []
         for i in range(n):
             if checklist[i].get() == 0:
                 CoursF.append(Cours[i])
-        Cours = CoursF
-        return Cours
+        return CoursF
 
 ###Main###
 
@@ -216,13 +223,13 @@ if __name__ == "__main__":
         if k == 0:
             Label(fichef,text="Pas de fiche encore faite ÷(").pack()
         supp = IntVar()
-        Button(fenetre,text="Supprimer un chapitre",command=lambda: CancelChp(fenetre,supp)).pack(side=TOP,pady=[0,10])
+        Button(fenetre,text="Supprimer un chapitre",command=lambda: ActionBouton(fenetre,supp)).pack(side=TOP,pady=[0,10])
         annule = IntVar()
         ajoutchp = IntVar()
         ajoutf = IntVar()
-        Button(fenetre,text="Quitter",fg="red",command=lambda: CancelChp(fenetre,annule)).pack(side=LEFT)
-        Button(fenetre,text="Ajouter un chapitre",command=lambda: CancelChp(fenetre,ajoutchp)).pack(side=LEFT)
-        Button(fenetre,text="Ajouter une fiche",command=lambda: CancelChp(fenetre,ajoutf)).pack(side=RIGHT)
+        Button(fenetre,text="Quitter",fg="red",command=lambda: ActionBouton(fenetre,annule)).pack(side=LEFT)
+        Button(fenetre,text="Ajouter un chapitre",command=lambda: ActionBouton(fenetre,ajoutchp)).pack(side=LEFT)
+        Button(fenetre,text="Ajouter une fiche",command=lambda: ActionBouton(fenetre,ajoutf)).pack(side=RIGHT)
         fenetre.mainloop()
         if annule.get() == 1:
             break
