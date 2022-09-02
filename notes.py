@@ -69,6 +69,9 @@ def matmoy(matiere, mat, notes, coeff):
 ### Programme principal ###
 if __name__ == "__main__":
 
+    ### Liste des matières ###
+    listmat = listMat()
+    
     ### Chargement des données ###
     [mat, notes, coeff] = loadnotes()
 
@@ -85,10 +88,36 @@ if __name__ == "__main__":
         print('\n')
 
         if option == 'Ajout':
+            
+            bool = 0
 
-            ajmat = input("Matiere : ")
-            ajnotes = float(input("Note : "))
-            ajcoeff = float(input("Coefficient : "))
+            while bool == 0:
+                
+                ajmat = input("Matiere : ")
+
+                for i in range(len(listmat)):
+                    if ajmat == listmat[i]:
+                        bool = 1
+            
+                if bool == 0:
+                    print("Cette matiere n'est pas valide, veulliez recommencer... \n")
+            
+
+            ajnotes = -1
+            while ajnotes < 0 or ajnotes > 20:
+                ajnotes = float(input("Note : "))
+
+                if ajnotes > 20:
+                    print("La saisie n'est pas valide : note supérieure à 20.")
+                elif ajnotes < 0:
+                    print("La saisie n'est pas valide : note inférieure à 0.")
+
+            ajcoeff = -1
+            while ajcoeff < 0:
+                ajcoeff = float(input("Coefficient : "))
+
+                if ajcoeff < 0:
+                    print("La saisie n'est pas valide : coefficient négatif.")
 
             # enregistrement des données
             mat.append(ajmat)
@@ -117,7 +146,17 @@ if __name__ == "__main__":
                     print("\n")
                     break
                 elif choix == 'o':
-                    matiere = input("Afficher la moyenne de quelle matiere ? ")
+
+                    bool = 0
+                    while bool == 0:
+                        matiere = input("Afficher la moyenne de quelle matiere ? ")
+                        for i in range(len(listmat)):
+                            if matiere == listmat[i]:
+                                bool = 1
+
+                        if bool == 0:
+                            print("Cette matière n'est pas valide, veulliez recommencer... \n")
+
                     moy = matmoy(matiere, mat, notes, coeff)
                     print("")
                     print("Votre moyenne de ",matiere, "est de", moy, "/ 20 \n")
