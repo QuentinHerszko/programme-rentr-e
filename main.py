@@ -193,13 +193,16 @@ def MainFenetreDevoir(ListeDevoir):
 def Informations(frame,humeur):
     couleur = {"heureux":"green","content":"lime","stressé":"orange","triste":"red"}
     prenom = loadPrenom()
-    Label(frame,text="{} est {}".format(prenom,humeur),fg=couleur[humeur]).pack(pady=10)
+    Label(frame,text="{} est {}".format(prenom,humeur),fg=couleur[humeur]).pack()
     ListeFiche = loadCours()
     comptFiche = 0
     for i in ListeFiche:
         if i[2] == '0' and i[3] == '0':
             comptFiche += 1
     Label(frame,text="Fiche de révision à faire: {}".format(comptFiche),justify=LEFT).pack(padx=[0,110])
+    ListeDevoir = loadDevoir()
+    comptDevoir = len(ListeDevoir)
+    Label(frame,text="Devoir à faire: {}".format(comptDevoir),justify=LEFT).pack(padx=[0,180])
     ListeNotes = loadNotes()
     MoyenneG = CalculeMoyenneG(ListeNotes)
     if MoyenneG == None:
@@ -215,9 +218,9 @@ def Informations(frame,humeur):
             FutureDS = i
             break;
     if FutureDS == None:
-        Label(frame,text="Pas de future DS prévue",justify=LEFT).pack(padx=[0,125])
+        Label(frame,text="Pas de futur DS prévu",justify=LEFT).pack(padx=[0,145])
     else:
-        Label(frame,text="Future DS: {}, {}".format(FutureDS[0],FutureDS[1]),justify=LEFT).pack(padx=[0,79])
+        Label(frame,text="Futur DS: {}, {}".format(FutureDS[0],FutureDS[1]),justify=LEFT).pack(padx=[0,79])
     ListeProjet = loadProjet()
     ListeProjet = ProjetTri(ListeProjet)
     FutureProjet = None
@@ -244,7 +247,7 @@ def Informations(frame,humeur):
     if FutureTP == None:
         Label(frame,text="Pas de TP à rendre",justify=LEFT).pack(padx=[0,165])
     else:
-        Label(frame,text="Future TP à rendre: {}, {}".format(FutureTP[0],FutureTP[1]),justify=LEFT).pack(padx=[0,23])
+        Label(frame,text="Futur TP à rendre: {}, {}".format(FutureTP[0],FutureTP[1]),justify=LEFT).pack(padx=[0,23])
     if FutureTPTest == None:
         Label(frame,text="Pas de TP test à venir",justify=LEFT).pack(padx=[0,145])
     else:
@@ -465,6 +468,5 @@ if __name__ == "__main__":
         PrenomTamagotchi()
     if vProg == 1:
         MainFenetre()
-    #AjoutDevoir()
 
-#pyinstaller --onefile test.py
+#pyinstaller --onefile main.py

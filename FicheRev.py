@@ -277,7 +277,7 @@ def MainFenetreFiche(Cours):
         test = suppChp(C)
         if not(test == None):
             C = test
-            C = MainFenetreFiche(C)
+        C = MainFenetreFiche(C)
     return C
 
 ###Main###
