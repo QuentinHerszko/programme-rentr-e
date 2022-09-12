@@ -13,44 +13,44 @@ def ActionBouton(fenetre,variable):
     variable.set(1)
     fenetre.destroy()
 
-###Chargement des DS###
+###Chargement des Projet###
 
-def loadDS():
-    ListeDS = []
-    f = open("Save/DS.txt",'r')
+def loadProjet():
+    ListeProjet = []
+    f = open("Save/Projet.txt",'r')
     ln = f.readline()
     while(1):
         ln = f.readline()
         if ln == '':
             break
-        ListeDS.append(ln.split())
+        ListeProjet.append(ln.split())
     f.close()
-    return ListeDS
+    return ListeProjet
 
-###Savegarde des DS###
+###Savegarde des Projet###
 
-def saveDS(ListeDS):
-    f = open("Save/DS.txt",'w')
+def saveProjet(ListeProjet):
+    f = open("Save/Projet.txt",'w')
     f.write("Matiere date\n")
-    for i in ListeDS:
+    for i in ListeProjet:
         f.write("{} {} {}\n".format(i[0],i[1],i[2]))
     f.close()
 
-###Regarde si un ds est passé ou non###
+###Regarde si un Projet est passé ou non###
 
-def DsFait(ListeDS):
+def ProjetFait(ListeProjet):
     L = []
     dateJour = time.localtime()
-    for i in ListeDS:
-        dateDS = time.strptime(i[1],"%d-%m-%Y")
-        if dateDS < dateJour and int(i[2]) == 0:
+    for i in ListeProjet:
+        dateProjet = time.strptime(i[1],"%d-%m-%Y")
+        if dateProjet < dateJour and int(i[2]) == 0:
             i[2] = 1
         L.append(i)
     return L
 
-###Ajouter un DS###
+###Ajouter un Projet###
 
-def verifAjoutDS(matiere,date):
+def verifAjoutProjet(matiere,date):
     verifMat = listMat()
     a = 0
     b = 0
@@ -69,9 +69,9 @@ def verifAjoutDS(matiere,date):
     else:
         return 0 
 
-def AjoutDS():
+def AjoutProjet():
     selec = Tk()
-    l = LabelFrame(selec, text="Entrée un DS:")
+    l = LabelFrame(selec, text="Entrée un Projet:")
     l.pack(side=TOP,padx=25,pady=[15,5])
     date = StringVar()     #Nb du chapitre
     matiere = StringVar()  #Matière (ex:MA0913)
@@ -87,9 +87,9 @@ def AjoutDS():
     if enregistrer.get() == 1:
         verif = 0
         while(verif == 0):
-            verif = verifAjoutDS(matiere.get(),date.get())
+            verif = verifAjoutProjet(matiere.get(),date.get())
             if not(verif == 1):
-                insert = AjoutDS()
+                insert = AjoutProjet()
                 if insert == None:
                     break
                 else:
@@ -98,55 +98,55 @@ def AjoutDS():
         if verif == 1:
             return [matiere.get(),date.get()]
 
-###Suppression de DS###
+###Suppression de Projet###
 
-def suppDS(ListeDS):
-    n = len(ListeDS)
+def suppProjet(ListeProjet):
+    n = len(ListeProjet)
     selec = Tk()
-    l = LabelFrame(selec,text='DS total:')
+    l = LabelFrame(selec,text='Projet total:')
     l.pack(side=TOP,padx=10,pady=5)
     checklist = [IntVar() for x in range(n)]
     for i in range(n):
-        Checkbutton(l,text="{}, le {}".format(ListeDS[i][0],ListeDS[i][1]),variable=checklist[i],justify=LEFT).pack(padx=[5,50])
+        Checkbutton(l,text="{}, le {}".format(ListeProjet[i][0],ListeProjet[i][1]),variable=checklist[i],justify=LEFT).pack(padx=[5,50])
     supp = IntVar()
     Button(selec,text="Cancel",fg='red',command=selec.destroy).pack(side=LEFT,padx=5,pady=5)
     Button(selec,text="Supprimer",command=lambda: ActionBouton(selec,supp)).pack(side=RIGHT,padx=5,pady=5)
     selec.mainloop()
     if supp.get() == 1:
-        ListeDSF = []
+        ListeProjetF = []
         for i in range(n):
             if checklist[i].get() == 0:
-                ListeDSF.append(ListeDS[i])
-        return ListeDSF
+                ListeProjetF.append(ListeProjet[i])
+        return ListeProjetF
 
-###Tri des DS###
+###Tri des Projet###
 
-def DSTri(ListeDS):
-    n = len(ListeDS)
+def ProjetTri(ListeProjet):
+    n = len(ListeProjet)
     ListeTriee = []
     date = []
     for i in range(n):
-        date.append([time.strptime(ListeDS[i][1],"%d-%m-%Y"),i])
+        date.append([time.strptime(ListeProjet[i][1],"%d-%m-%Y"),i])
     date = sorted(date)
     Iter = []
     for i in date:
         Iter.append(i[1])
     for i in Iter:
-        ListeTriee.append(ListeDS[i])
+        ListeTriee.append(ListeProjet[i])
     return ListeTriee
 
 ###Panneau principal###
 
-def MainFenetreDS(ListeDS):
+def MainFenetreProjet(ListeProjet):
     k1 = 0
     k2 = 0
     fenetre = Tk()
-    Label(fenetre,text="---Information sur les DS---").pack()
-    L = DsFait(ListeDS)
-    L = DSTri(L)
-    l = LabelFrame(fenetre,text="DS à venir:")
+    Label(fenetre,text="---Information sur les Projet---").pack()
+    L = ProjetFait(ListeProjet)
+    L = ProjetTri(L)
+    l = LabelFrame(fenetre,text="Projet à venir:")
     l.pack(padx=[20,10],pady=[0,10])
-    fait = LabelFrame(fenetre,text="Ds déjà fait:")
+    fait = LabelFrame(fenetre,text="Projet déjà fait:")
     fait.pack(side=TOP,padx=[20,10],pady=[0,10])
     for i in L:
         if int(i[2]) == 0:
@@ -156,33 +156,32 @@ def MainFenetreDS(ListeDS):
             Label(fait,text="{} le {}".format(i[0],i[1])).pack(padx=[0,100])
             k2 += 1
     if k1 == 0:
-        Label(l,text="Pas de DS à venir!").pack()
+        Label(l,text="Pas de Projet à venir!").pack()
     if k2 == 0:
-        Label(fait,text="Pas encore de DS fait").pack()
+        Label(fait,text="Pas encore de Projet fait").pack()
     Ajout = IntVar()
     supp = IntVar()
-    Button(fenetre,text="Supprimer un DS",command=lambda: ActionBouton(fenetre,supp)).pack(side=TOP,pady=[0,10])
+    Button(fenetre,text="Supprimer un Projet",command=lambda: ActionBouton(fenetre,supp)).pack(side=TOP,pady=[0,10])
     Button(fenetre,text="Quitter", fg='red',command=fenetre.destroy).pack(side=LEFT)
-    Button(fenetre,text="Ajouter un DS",command=lambda: ActionBouton(fenetre,Ajout)).pack(side=RIGHT)
+    Button(fenetre,text="Ajouter un Projet",command=lambda: ActionBouton(fenetre,Ajout)).pack(side=RIGHT)
     fenetre.mainloop()
     if Ajout.get() == 1:
-        insert = AjoutDS()
+        insert = AjoutProjet()
         if not(insert == None):
             insert.append(0)
             L.append(insert)
-        L = MainFenetreDS(L)
+        L = MainFenetreProjet(L)
     if supp.get() == 1:
-        insert = suppDS(L)
+        insert = suppProjet(L)
         if not(insert == None):
             L = insert
-        L = MainFenetreDS(L)
+        L = MainFenetreProjet(L)
     return L
 
 if __name__ == '__main__':
-    ListeDS = loadDS()
-    print(ListeDS)
-    ListeDS = MainFenetreDS(ListeDS)
-    saveDS(ListeDS)
+    ListeProjet = loadProjet()
+    ListeProjet = MainFenetreProjet(ListeProjet)
+    saveProjet(ListeProjet)
 
     # time.strptime("date","format"), %Y = annee, %m = mois, %d = jour
     # time.localtime() = date du jour

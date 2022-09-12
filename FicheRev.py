@@ -1,4 +1,3 @@
-from threading import local
 from tkinter import *
 from tkinter.messagebox import showerror
 import numpy as np
@@ -80,12 +79,12 @@ def NombreChapitre(Cours):
 def NextDS():
     ListeDS = loadDS()
     ListeDS = DsFait(ListeDS)
+    MatiereDS = None
     a = int(time.localtime()[7])
     for i in ListeDS:
         if i[2] == '0':
             b = int(time.strptime(i[1],"%d-%m-%Y")[7])
             Jours = b - a 
-            print(Jours)
             if Jours <= 7:
                 MatiereDS = i[0]
                 break
