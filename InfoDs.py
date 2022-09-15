@@ -1,6 +1,7 @@
 import time
 from tkinter import *
 from tkinter.messagebox import showerror
+import os
 
 ###Variables générales###
 
@@ -178,7 +179,19 @@ def MainFenetreDS(ListeDS):
         L = MainFenetreDS(L)
     return L
 
+###Vérification des sauvegardes###
+
+def verifSave():
+    if not(os.path.exists("Save")):
+        os.mkdir("Save")
+        f = open("Save/DS.txt",'w')
+        f.close()
+    if not(os.path.exists("Save/DS.txt")):
+        f = open("Save/DS.txt",'w')
+        f.close()
+
 if __name__ == '__main__':
+    verifSave()
     ListeDS = loadDS()
     print(ListeDS)
     ListeDS = MainFenetreDS(ListeDS)

@@ -3,11 +3,21 @@ from tkinter.messagebox import showerror
 import numpy as np
 from InfoDs import loadDS, DsFait
 import time
+import os
 
 ###Variables générales###
 
-def listMat():
-    return ["MA0913","MA0914","SEP0921","SEP0922","MA0934","MA0944","MA0944","CHPS0703","AN0904","MA0953"]
+def listMat(Cours):
+    ListeMat = []
+    for i in Cours:
+        matiere = i[0]
+        v = 0
+        for j in ListeMat:
+            if j == matiere:
+                v = 1
+        if v == 0:
+            ListeMat.append(matiere)
+    return ListeMat
 
 ###Action sur les boutons###
 
@@ -43,7 +53,7 @@ def saveCours(Cours):
 
 def CoursTri(Cours):
     CoursTri = []
-    Liste = listMat()
+    Liste = listMat(Cours)
     n = len(Cours)
     for i in Liste:
         chap = []
@@ -61,7 +71,7 @@ def CoursTri(Cours):
 ###Fonction du nombre de chapitre###
 
 def NombreChapitre(Cours):
-    Liste = listMat()
+    Liste = listMat(Cours)
     n = len(Cours)
     m = len(Liste)
     NbChp = np.zeros(m)
@@ -93,7 +103,7 @@ def NextDS():
 ###Fonction d'importance###
 
 def ChpRetard(Cours,NbChp,MatiereDS):
-    Liste = listMat()
+    Liste = listMat(Cours)
     n = len(Cours)
     k = 0
     l = 0
@@ -113,16 +123,6 @@ def ChpRetard(Cours,NbChp,MatiereDS):
     return imp 
 
 ###Insertion de chapitre###
-
-def verifChp(matiere):
-    verifMat = listMat()
-    a = 0
-    for i in verifMat:
-        if i == matiere:
-            a = 1
-    if a == 0:
-        showerror("Matière pas reconnue","La matière: {} n'est pas reconnue. Attention au matière comme SEP0922 ou CHPS0703!".format(matiere))
-    return a
 
 def helpChp():
     aide = Tk()
@@ -157,19 +157,7 @@ def insertChp():
     Button(selec,text="Enregistrer",command=lambda: ActionBouton(selec,enregistrer),fg="green").pack(side=RIGHT,padx=25,pady=5)
     selec.mainloop()
     if enregistrer.get() == 1:
-        verif = 0
-        while(verif == 0):
-            verif = verifChp(matiere.get())
-            if not(verif == 1):
-                insert = insertChp()
-                if insert == None:
-                    break 
-                else:
-                    matiere.set(insert[0])
-                    chap.set(insert[1])
-                    fichable.set(insert[2])
-        if verif == 1:
-            return [matiere.get(),chap.get(),fichable.get()]
+        return [matiere.get(),chap.get(),fichable.get()]
 
 ###Ajout fiches###
 
@@ -280,9 +268,21 @@ def MainFenetreFiche(Cours):
         C = MainFenetreFiche(C)
     return C
 
+###Vérification des sauvegardes###
+
+def verifSave():
+    if not(os.path.exists("Save")):
+        os.mkdir("Save")
+        f = open("Save/Fiche.txt",'w')
+        f.close()
+    if not(os.path.exists("Save/Fiche.txt")):
+        f = open("Save/Fiche.txt",'w')
+        f.close()
+
 ###Main###
 
 if __name__ == "__main__":
+    verifSave()
     Cours = loadCours()
     Cours = MainFenetreFiche(Cours)
     saveCours(Cours)

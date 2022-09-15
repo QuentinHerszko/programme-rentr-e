@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter.messagebox import showerror
+import os 
 
 #Coeff/matiere
 
@@ -157,6 +158,17 @@ def MainFenetreNote(ListeNotes):
             L.append(insert)
         L = MainFenetreNote(L)
     return L
+
+###Vérification des sauvegardes###
+
+def verifSave():
+    if not(os.path.exists("Save")):
+        os.mkdir("Save")
+        f = open("Save/Note.txt",'w')
+        f.close()
+    if not(os.path.exists("Save/Note.txt")):
+        f = open("Save/Note.txt",'w')
+        f.close()
 
 if __name__ == "__main__":
     ListeNotes = loadNotes()

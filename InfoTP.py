@@ -1,6 +1,7 @@
 import time
 from tkinter import *
 from tkinter.messagebox import showerror
+import os
 
 ###Variables générales###
 
@@ -226,6 +227,17 @@ def MainFenetreTP(ListeTP):
             L = insert
         L = MainFenetreTP(L)
     return L
+
+###Vérification des sauvegardes###
+
+def verifSave():
+    if not(os.path.exists("Save")):
+        os.mkdir("Save")
+        f = open("Save/TP.txt",'w')
+        f.close()
+    if not(os.path.exists("Save/TP.txt")):
+        f = open("Save/TP.txt",'w')
+        f.close()
 
 if __name__ == '__main__':
     ListeTP = loadTP()
