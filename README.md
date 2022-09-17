@@ -23,9 +23,9 @@ Et voilà, vous pouvez maintenant lancer le programme en cliquant sur l'exécuta
 Vous pouvez directement accéder et mettre à jour le programme en créant des alias:
 
 * Faire le raccourcis :
-  `* Ouvrir le fichier .bashrc : `sudo nano .bashrc` `
-  `* Ajouter l'alias suivant : `alias NomAlias='cd TonChemin ; ./main'` où le chemin correspond au chemin où se trouve l'executable `main` `
+  * Ouvrir le fichier .bashrc : `sudo nano .bashrc`
+  * Ajouter l'alias suivant : `alias NomAlias='cd TonChemin ; ./main'` où le chemin correspond au chemin où se trouve l'executable `main`
 
 * Faire les mises à jours :
-  `* Ouvrir le fichier .bashrc : `sudo nano .bashrc` `
-  `* Ajouter l'alias suivant : `alias NomAlias='cd TonChemin ; git pull ; rm main ; pyinstaller --onefile main.py ; mv -f dist/main . ; rm -rf dist ; rm -rf build ; ./main'` où le chemin correspond au chemin où se trouve l'executable `main` `
+  * Ouvrir le fichier .bashrc : `sudo nano .bashrc`
+  * Ajouter l'alias suivant : `alias NomAlias='cd TonChemin ; git pull ; rm main ; pyinstaller --onefile main.py ; mv -f dist/main . ; rm -rf dist ; rm -rf build ; ./main'` où le chemin correspond au chemin où se trouve l'executable `main`
