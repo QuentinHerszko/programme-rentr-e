@@ -1,0 +1,6 @@
+Matiere chp fichable fait
+MA0914 1 0 0
+CHPS0703 1 0 0
+Git 0 0 1
+Fortran 1 0 1
+Fortran 2 0 1
