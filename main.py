@@ -259,38 +259,41 @@ def sysPoint():
     Points = 0
     NbNonValid = 0
     ListeFiche = loadCours()
-    comptFiche = 0
-    for i in ListeFiche:
-        if i[2] == '0' and i[3] == '0':
-            comptFiche += 1
-    if comptFiche <=2:
-        Points += 25
-    elif 2 < comptFiche <= 4:
-        Points += 50/3
-    elif 4 < comptFiche <= 6:
-        Points += 25/3
+    if not(ListeFiche == []):
+        comptFiche = 0
+        for i in ListeFiche:
+            if i[2] == '0' and i[3] == '0':
+                comptFiche += 1
+        if comptFiche <=2:
+            Points += 25
+        elif 2 < comptFiche <= 4:
+            Points += 50/3
+        elif 4 < comptFiche <= 6:
+            Points += 25/3
+    else:
+        NbNonValid += 1
     ListeTP = loadTP()
-    comptTP = 0
-    for i in ListeTP:
-        if i[2] == '0':
-            comptTP += 1
-    if comptTP <= 1:
-        Points += 25
-    elif 1 < comptTP <= 2:
-        Points += 50/3
-    elif 2 < comptTP <= 3:
-        Points += 25/3
+    if not(ListeTP == []):
+        comptTP = 0
+        for i in ListeTP:
+            if i[2] == '0':
+                comptTP += 1
+        if comptTP <= 1:
+            Points += 25
+        elif 1 < comptTP <= 2:
+            Points += 50/3
+        elif 2 < comptTP <= 3:
+            Points += 25/3
+    else:
+        NbNonValid += 1
     ListeProjet = loadProjet()
-    comptProjet = 0
-    for i in ListeProjet:
-        if i[2] == '0':
-            comptProjet += 1
-    Points += (1 - comptProjet*(1/6)) * 25   
-    if ListeFiche == []:
-        NbNonValid += 1
-    if ListeProjet == []:
-        NbNonValid += 1
-    if ListeTP == []:
+    if not(ListeProjet == []):
+        comptProjet = 0
+        for i in ListeProjet:
+            if i[2] == '0':
+                comptProjet += 1
+        Points += (1 - comptProjet*(1/6)) * 25
+    else:
         NbNonValid += 1
     ListeNotes = loadNotes()
     if ListeNotes == []:
@@ -347,13 +350,15 @@ def MainFenetre():
     Button(fenetre,text="Ajout Rapide TP",command=lambda: ActionBouton(fenetre,RapideTP)).pack(side=RIGHT)
     Button(fenetre,text="Devoir à faire",command=lambda: ActionBouton(fenetre,devoir)).pack(side=RIGHT)
     Button(fenetre,text="Modifier le prénom",command=lambda: ActionBouton(fenetre,ModifP)).pack(side=RIGHT)
-    if pts >= (75 - nonV*25):
+    nbValide = 4 - nonV
+    coeffHumeur = [0.75*nbValide*25,0.5*nbValide*25,0.25*nbValide*25]
+    if pts >= coeffHumeur[0]:
         humeur = "heureux"
         TamaContent(f1,"green")
-    elif 75 > pts >= (50 - nonV*25):
+    elif coeffHumeur[0] > pts >= coeffHumeur[1]:
         humeur = "content"
         TamaContent(f1,"lime")
-    elif 50 > pts >= (25 - nonV*25):
+    elif coeffHumeur[1] > pts >= coeffHumeur[2]:
         humeur = "stressé"
         TamaMoyen(f1)
     else:

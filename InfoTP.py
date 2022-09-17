@@ -5,8 +5,8 @@ import os
 
 ###Variables générales###
 
-def listMat():
-    return ["MA0913","MA0914","SEP0921","SEP0922","MA0934","MA0944","MA0944","CHPS0703","AN0904","MA0953"]
+#def listMat():
+    #return ["MA0913","MA0914","SEP0921","SEP0922","MA0934","MA0944","MA0944","CHPS0703","AN0904","MA0953"]
 
 ###Action sur les boutons###
 
@@ -40,20 +40,13 @@ def saveTP(ListeTP):
 ###Ajouter un TP###
 
 def verifAjoutTP(matiere,date):
-    verifMat = listMat()
-    a = 0
     b = 0
-    for i in verifMat:
-        if i == matiere:
-            a = 1
-    if a == 0:
-        showerror("Matière pas reconnue","La matière: {} n'est pas reconnue. Attention au matière comme SEP0922 ou CHPS0703!".format(matiere))
     annee = date.split('-')[2]
     if annee == '2022' or annee == '2023':
         b = 1
     if b == 0:
         showerror("Date pas correct","La date n'est pas correct, l'année universitaire ne se déroule pas en {}!".format(annee))
-    if a == 1 and b == 1:
+    if b == 1:
         return 1
     else:
         return 0 
