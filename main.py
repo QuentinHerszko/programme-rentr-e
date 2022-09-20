@@ -1,12 +1,15 @@
 import os
 import time
+import numpy as np
+import webbrowser
 from tkinter import *
-from tkinter.messagebox import showerror, askyesno
+from tkinter.messagebox import showerror, askyesno, showinfo
 from FicheRev import loadCours, MainFenetreFiche,saveCours
 from InfoDs import loadDS, DSTri, MainFenetreDS, saveDS
 from InfoProjet import loadProjet, ProjetTri, MainFenetreProjet, saveProjet
 from InfoTP import loadTP, TPTri, MainFenetreTP, saveTP, AjoutRapide
 from Moyenne_Gen import loadNotes, MainFenetreNote, saveNote, CalculeMoyenneG
+#from MaJ import Mise_a_jour
 
 ###Action sur les boutons###
 
@@ -23,64 +26,124 @@ def loadPrenom():
     return Prenom
 
 def TamaContent(frame,couleur):
-    for ligne in range(6):
+    for ligne in [0,1,3,4,5]:
         if ligne == 1:
-            Button(frame,background=couleur).grid(row=ligne,column=2)
-            Button(frame,background=couleur).grid(row=ligne,column=4)
+            a = Button(frame,background=couleur,command=BoboYeux)
+            b = Button(frame,background=couleur,command=BoboYeux)
+            a.grid(row=ligne,column=2)
+            b.grid(row=ligne,column=4)
             for colonne in [0,1,3,5,6]:
                 Button(frame).grid(row=ligne,column=colonne)
         elif ligne == 3:
-            Button(frame,background=couleur).grid(row=ligne,column=1)
-            Button(frame,background=couleur).grid(row=ligne,column=5)
+            c = Button(frame,background=couleur)
+            d = Button(frame,background=couleur)
+            c.grid(row=ligne,column=1)
+            d.grid(row=ligne,column=5)
             for colonne in [0,2,3,4,6]:
                 Button(frame).grid(row=ligne,column=colonne)
         elif ligne == 4:
-            Button(frame,background=couleur).grid(row=ligne,column=2)
-            Button(frame,background=couleur).grid(row=ligne,column=3)
-            Button(frame,background=couleur).grid(row=ligne,column=4)
+            e = Button(frame,background=couleur)
+            f = Button(frame,background=couleur)
+            g = Button(frame,background=couleur)
+            e.grid(row=ligne,column=2)
+            f.grid(row=ligne,column=3)
+            g.grid(row=ligne,column=4)
             for colonne in [0,1,5,6]:
                 Button(frame).grid(row=ligne,column=colonne)
         else:
             for colonne in range(7):
                 Button(frame).grid(row=ligne,column=colonne)
+    for colonne in range(7):
+        if (colonne == 3):
+            Button(frame,command=lambda: nezTama(a,b,c,d,e,f,g)).grid(row=2,column=colonne)
+        else:
+            Button(frame).grid(row=2,column=colonne)
 
 def TamaTriste(frame):
-    for ligne in range(6):
+    for ligne in [0,1,3,4,5]:
         if ligne == 1:
-            Button(frame,background="red").grid(row=ligne,column=2)
-            Button(frame,background="red").grid(row=ligne,column=4)
+            a = Button(frame,background="red",command=BoboYeux)
+            b = Button(frame,background="red",command=BoboYeux)
+            a.grid(row=ligne,column=2)
+            b.grid(row=ligne,column=4)
             for colonne in [0,1,3,5,6]:
                 Button(frame).grid(row=ligne,column=colonne)
         elif ligne == 4:
-            Button(frame,background="red").grid(row=ligne,column=1)
-            Button(frame,background="red").grid(row=ligne,column=5)
+            c = Button(frame,background="red")
+            d = Button(frame,background="red")
+            c.grid(row=ligne,column=1)
+            d.grid(row=ligne,column=5)
             for colonne in [0,2,3,4,6]:
                 Button(frame).grid(row=ligne,column=colonne)
         elif ligne == 3:
-            Button(frame,background="red").grid(row=ligne,column=2)
-            Button(frame,background="red").grid(row=ligne,column=3)
-            Button(frame,background="red").grid(row=ligne,column=4)
+            e = Button(frame,background="red")
+            f = Button(frame,background="red")
+            g = Button(frame,background="red")
+            e.grid(row=ligne,column=2)
+            f.grid(row=ligne,column=3)
+            g.grid(row=ligne,column=4)
             for colonne in [0,1,5,6]:
                 Button(frame).grid(row=ligne,column=colonne)
         else:
             for colonne in range(7):
                 Button(frame).grid(row=ligne,column=colonne)
+    for colonne in range(7):
+        if (colonne == 3):
+            Button(frame,command=lambda: nezTama(a,b,c,d,e,f,g)).grid(row=2,column=colonne)
+        else:
+            Button(frame).grid(row=2,column=colonne)
 
 def TamaMoyen(frame):
-    for ligne in range(6):
+    for ligne in [0,1,3,4,5]:
         if ligne == 1:
-            Button(frame,background="orange").grid(row=ligne,column=2)
-            Button(frame,background="orange").grid(row=ligne,column=4)
+            a = Button(frame,background="orange",command=BoboYeux)
+            b = Button(frame,background="orange",command=BoboYeux)
+            a.grid(row=ligne,column=2)
+            b.grid(row=ligne,column=4)
             for colonne in [0,1,3,5,6]:
                 Button(frame).grid(row=ligne,column=colonne)
         elif ligne == 3:
-            for colonne in [1,2,3,4,5]:
-                Button(frame,background="orange").grid(row=ligne,column=colonne)
+            c = Button(frame,background="orange")
+            d = Button(frame,background="orange")
+            e = Button(frame,background="orange")
+            f = Button(frame,background="orange")
+            g = Button(frame,background="orange")
+            c.grid(row=ligne,column=1)
+            d.grid(row=ligne,column=2)
+            e.grid(row=ligne,column=3)
+            f.grid(row=ligne,column=4)
+            g.grid(row=ligne,column=5)
             for colonne in [0,6]:
                 Button(frame).grid(row=ligne,column=colonne)
         else:
             for colonne in range(7):
                 Button(frame).grid(row=ligne,column=colonne)
+    for colonne in range(7):
+                if (colonne == 3):
+                    Button(frame,command=lambda: nezTama(a,b,c,d,e,f,g)).grid(row=2,column=colonne)
+                else:
+                    Button(frame).grid(row=2,column=colonne)
+
+def BoboYeux():
+    showerror("","aïe ça fais super mal!!!\n~(>_<。)＼")
+
+def nezTama(a,b,c,d,e,f,g):
+    id = {0:'red',1:'green',2:'yellow',3:'blue',4:'pink',5:'cyan',6:'lime',7:'violet',8:'magenta',9:'orange',10:'purple'}
+    oldCol = 20
+    while(1):
+        newCol = id[np.random.randint(11)]
+        while(newCol == oldCol):
+             newCol = id[np.random.randint(11)]
+        a['bg'] = newCol
+        b['bg'] = newCol
+        c['bg'] = newCol
+        d['bg'] = newCol
+        e['bg'] = newCol
+        f['bg'] = newCol
+        g['bg'] = newCol
+        a.update()
+        oldCol = newCol
+        time.sleep(0.1)
 
 ### Gestion des devoirs###
 
@@ -334,6 +397,8 @@ def MainFenetre():
     DS = IntVar()
     TP = IntVar()
     Projet = IntVar()
+    edt = IntVar()
+    #maj = IntVar()
     #Fenetres
     f = Frame(fenetre)
     f.pack()
@@ -347,8 +412,10 @@ def MainFenetre():
     ModifP = IntVar()
     devoir = IntVar()
     Button(fenetre,text="Quitter",command=fenetre.destroy,fg="red").pack(side = LEFT)
+    #Button(fenetre,text="Mise à jour",command=lambda: ActionBouton(fenetre,maj),bg='red').pack(side=LEFT)
     Button(fenetre,text="Ajout Rapide TP",command=lambda: ActionBouton(fenetre,RapideTP)).pack(side=RIGHT)
     Button(fenetre,text="Devoir à faire",command=lambda: ActionBouton(fenetre,devoir)).pack(side=RIGHT)
+    Button(fenetre,text="Emplois du temps",command=lambda: ActionBouton(fenetre,edt)).pack(side=RIGHT)
     Button(fenetre,text="Modifier le prénom",command=lambda: ActionBouton(fenetre,ModifP)).pack(side=RIGHT)
     nbValide = 4 - nonV
     coeffHumeur = [0.75*nbValide*25,0.5*nbValide*25,0.25*nbValide*25]
@@ -411,6 +478,11 @@ def MainFenetre():
         ListeDevoir = MainFenetreDevoir(ListeDevoir)
         saveDevoir(ListeDevoir)
         MainFenetre()
+    if edt.get() == 1:
+        webbrowser.open("https://calendar.google.com/calendar/u/0/embed?src=vve57hbt6d2sm7kc3c82l6td4g@group.calendar.google.com&ctz=Europe/Paris&pli=1")
+        MainFenetre()
+    #if maj.get() == 1:
+        #Mise_a_jour()
 
 ###Existence des sauvegardes###
 
@@ -466,6 +538,10 @@ def Tuto():
         fenetre.mainloop()
 
 if __name__ == "__main__":
+    ###Ajout pour faire l'application###
+    os.chdir('/home/alexandre/Documents/ProgRentree')
+
+    ###Programme###
     vSave = verifSave()
     vProg = verifProg()
     if vSave == 0:

@@ -41,15 +41,21 @@ def saveTP(ListeTP):
 
 def verifAjoutTP(matiere,date):
     b = 0
+    a = 0
+    mat = matiere.split()
+    if len(mat) == 1:
+        a = 1
+    else:
+        showerror("Saisie incorrect","La saisie comporte des espaces, écrire sous la forme: truc_bidule à la place de: truc bidule")
     annee = date.split('-')[2]
     if annee == '2022' or annee == '2023':
         b = 1
     if b == 0:
         showerror("Date pas correct","La date n'est pas correct, l'année universitaire ne se déroule pas en {}!".format(annee))
-    if b == 1:
+    if a == 1 and b ==1:
         return 1
     else:
-        return 0 
+        return 0
 
 def AjoutTP():
     selec = Tk()
@@ -129,6 +135,8 @@ def suppTP(ListeTP):
     l = LabelFrame(selec,text='TP total:')
     l.pack(side=TOP,padx=10,pady=5)
     checklist = [IntVar() for x in range(n)]
+    if n == 0:
+        Label(selec,text="Pas de TP à rendre").pack()
     for i in range(n):
         Checkbutton(l,text="{}, le {}".format(ListeTP[i][0],ListeTP[i][1]),variable=checklist[i],justify=LEFT).pack(padx=[5,50])
     supp = IntVar()

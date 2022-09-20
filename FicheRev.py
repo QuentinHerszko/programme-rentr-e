@@ -139,6 +139,15 @@ def helpChp():
     Label(l3,text="Le bouton 'Pas de fiche' permet de désigné si le chapitre n'as pas \n besoin de fiche. \n Si coché, ce chapitre ne sera pas proposé en fiche de révision.",justify=LEFT).pack(padx=[0,30])
     Button(aide,text='OK',command=aide.destroy).pack(pady=5)
 
+def verifMatiere(matiere):
+    a = 0
+    mat = matiere.split()
+    if len(mat) == 1:
+        a = 1
+    else:
+        showerror("Saisie incorrect","La saisie comporte des espaces, écrire sous la forme: truc_bidule à la place de: truc bidule")
+    return a
+
 def insertChp():
     selec = Tk()
     l = LabelFrame(selec, text="Entrée du chapitre:")
@@ -157,7 +166,16 @@ def insertChp():
     Button(selec,text="Enregistrer",command=lambda: ActionBouton(selec,enregistrer),fg="green").pack(side=RIGHT,padx=25,pady=5)
     selec.mainloop()
     if enregistrer.get() == 1:
-        return [matiere.get(),chap.get(),fichable.get()]
+        verif = verifMatiere(matiere.get())
+        if verif == 0:
+            insert = insertChp()
+            if not(insert == None):
+                matiere.set(insert[0])
+                chap.set(insert[1])
+                fichable.set(insert[2])
+                verif = 1
+        if verif == 1:
+            return [matiere.get(),chap.get(),fichable.get()]
 
 ###Ajout fiches###
 
@@ -167,6 +185,8 @@ def AjoutFiche(Cours):
     l = LabelFrame(selec,text='Fiche réalisée:')
     l.pack(side=TOP,padx=10,pady=5)
     checklist = [IntVar() for x in range(n)]
+    if n == 0:
+        Label(selec,text="Pas de fiches à rendre").pack()
     for i in range(n):
         if int(Cours[i][2]) == 0 and int(Cours[i][3]) == 0:
             Checkbutton(l,text="{}, chapitre {}".format(Cours[i][0],Cours[i][1]),variable=checklist[i],justify=LEFT).pack(padx=[5,50])
@@ -244,7 +264,6 @@ def MainFenetreFiche(Cours):
         Label(fichef,text="Pas de fiche encore faite ÷(").pack()
     supp = IntVar()
     Button(fenetre,text="Supprimer un chapitre",command=lambda: ActionBouton(fenetre,supp)).pack(side=TOP,pady=[0,10])
-    annule = IntVar()
     ajoutchp = IntVar()
     ajoutf = IntVar()
     Button(fenetre,text="Quitter",fg="red",command=fenetre.destroy).pack(side=LEFT)
@@ -257,7 +276,7 @@ def MainFenetreFiche(Cours):
             insert.append(0)
             C.append(insert)
             C = CoursTri(C)
-            C = MainFenetreFiche(C)
+        C = MainFenetreFiche(C)
     if ajoutf.get() == 1:
         C = AjoutFiche(C)
         C = MainFenetreFiche(C)
