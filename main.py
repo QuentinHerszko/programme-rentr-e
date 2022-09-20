@@ -539,7 +539,7 @@ def Tuto():
 
 if __name__ == "__main__":
     ###Ajout pour faire l'application###
-    os.chdir('/home/alexandre/Documents/ProgRentree')
+    #os.chdir('/home/alexandre/Documents/ProgRentree')
 
     ###Programme###
     vSave = verifSave()
