@@ -3,6 +3,12 @@ from tkinter import *
 from tkinter.messagebox import showerror
 import os
 
+class TP:
+    def __init__(self,matiere,date,test):
+        self.matiere = matiere
+        self.date = date
+        self.test = test
+
 ###Variables générales###
 
 #def listMat():
@@ -24,7 +30,8 @@ def loadTP():
         ln = f.readline()
         if ln == '':
             break
-        ListeTP.append(ln.split())
+        data = ln.split()
+        ListeTP.append(TP(data[0],data[1],data[2]))
     f.close()
     return ListeTP
 
@@ -34,7 +41,7 @@ def saveTP(ListeTP):
     f = open("Save/TP.txt",'w')
     f.write("Matiere date\n")
     for i in ListeTP:
-        f.write("{} {} {}\n".format(i[0],i[1],i[2]))
+        f.write("{} {} {}\n".format(i.matiere,i.date,i.test))
     f.close()
 
 ###Ajouter un TP###
@@ -59,6 +66,7 @@ def verifAjoutTP(matiere,date):
 
 def AjoutTP():
     selec = Tk()
+    selec.title("Ajouter un TP")
     l = LabelFrame(selec, text="Entrée un TP:")
     l.pack(side=TOP,padx=25,pady=[15,5])
     date = StringVar()     #Nb du chapitre
@@ -91,6 +99,7 @@ def AjoutTP():
 def AjoutRapide():
     ListeMois = {"Jan":1,"Feb":2,"Mar":3,"Apr":4,"May":5,"Jun":6,"Jul":7,"Aug":8,"Sep":9,"Oct":10,"Nov":11,"Dec":12}
     select = Tk()
+    select.title("Ajout rapide")
     l = LabelFrame(select, text="Ajout rapide:")
     l.pack(side=TOP)
     Ajouter = IntVar()
@@ -132,13 +141,14 @@ def AjoutRapide():
 def suppTP(ListeTP):
     n = len(ListeTP)
     selec = Tk()
+    selec.title("Rendre un TP")
     l = LabelFrame(selec,text='TP total:')
     l.pack(side=TOP,padx=10,pady=5)
     checklist = [IntVar() for x in range(n)]
     if n == 0:
         Label(selec,text="Pas de TP à rendre").pack()
     for i in range(n):
-        Checkbutton(l,text="{}, le {}".format(ListeTP[i][0],ListeTP[i][1]),variable=checklist[i],justify=LEFT).pack(padx=[5,50])
+        Checkbutton(l,text="{}, le {}".format(ListeTP[i].matiere,ListeTP[i].date),variable=checklist[i],justify=LEFT).pack(padx=[5,50])
     supp = IntVar()
     Button(selec,text="Cancel",fg='red',command=selec.destroy).pack(side=LEFT,padx=5,pady=5)
     Button(selec,text="Rendu!",command=lambda: ActionBouton(selec,supp)).pack(side=RIGHT,padx=5,pady=5)
@@ -157,7 +167,7 @@ def TPTri(ListeTP):
     ListeTriee = []
     date = []
     for i in range(n):
-        date.append([time.strptime(ListeTP[i][1],"%d-%m-%Y"),i])
+        date.append([time.strptime(ListeTP[i].date,"%d-%m-%Y"),i])
     date = sorted(date)
     Iter = []
     for i in date:
@@ -172,8 +182,8 @@ def TPTestFait(ListeTP):
     L = []
     dateJour = time.localtime()
     for i in ListeTP:
-        if i[2] == 1:
-            dateTPT = time.strptime(i[1],"%d-%m-%Y")
+        if i.test == 1:
+            dateTPT = time.strptime(i.date,"%d-%m-%Y")
             if not(dateTPT < dateJour):
                 L.append(i)
         else:
@@ -182,10 +192,11 @@ def TPTestFait(ListeTP):
 
 ###Panneau principal###
 
-def MainFenetreTP(ListeTP):
+def FenetreTP(ListeTP):
     k1 = 0
     k2 = 0
     fenetre = Tk()
+    fenetre.title("Informations TP")
     Label(fenetre,text="---Information sur les TP---").pack()
     L = TPTri(ListeTP)
     L = TPTestFait(L)
@@ -194,11 +205,11 @@ def MainFenetreTP(ListeTP):
     fait = LabelFrame(fenetre,text="TP test à venir:")
     fait.pack(side=TOP,padx=[20,10],pady=[0,10])
     for i in L:
-        if int(i[2]) == 0:
-            Label(l,text="{} le {}".format(i[0],i[1])).pack(padx=[0,100])
+        if int(i.test) == 0:
+            Label(l,text="{} le {}".format(i.matiere,i.date)).pack(padx=[0,100])
             k1 += 1
         else:
-            Label(fait,text="{} le {}".format(i[0],i[1])).pack(padx=[0,100])
+            Label(fait,text="{} le {}".format(i.matiere,i.date)).pack(padx=[0,100])
             k2 += 1
     if k1 == 0:
         Label(l,text="Pas de TP à venir!").pack()
@@ -215,19 +226,28 @@ def MainFenetreTP(ListeTP):
     if Ajout.get() == 1:
         insert = AjoutTP()
         if not(insert == None):
-            L.append(insert)
-        L = MainFenetreTP(L)
+            L.append(TP(insert[0],insert[1],insert[2]))
+        return [1,L]
     if rapide.get() == 1:
         insert = AjoutRapide()
         if not(insert == None):
             L.append(insert)
-        L = MainFenetreTP(L)
+        return [1,L]
     if supp.get() == 1:
         insert = suppTP(L)
         if not(insert == None):
             L = insert
-        L = MainFenetreTP(L)
-    return L
+        return [1,L]
+    return [0,L]
+
+def MainFenetreTP():
+    ListeTP = loadTP()
+    v = [0,ListeTP]
+    while(1):
+        v = FenetreTP(v[1])
+        if v[0] == 0:
+            break
+    saveTP(v[1])
 
 ###Vérification des sauvegardes###
 
@@ -241,9 +261,7 @@ def verifSave():
         f.close()
 
 if __name__ == '__main__':
-    ListeTP = loadTP()
-    ListeTP = MainFenetreTP(ListeTP)
-    saveTP(ListeTP)
+    MainFenetreTP()
 
     # time.strptime("date","format"), %Y = annee, %m = mois, %d = jour
     # time.localtime() = date du jour

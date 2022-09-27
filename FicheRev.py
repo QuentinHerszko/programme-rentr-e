@@ -5,12 +5,27 @@ from InfoDs import loadDS, DsFait
 import time
 import os
 
+############
+###class####
+############
+
+class FicheRev:
+    def __init__(self,matiere,chapitre,aJour,fait):
+        self.matiere = matiere
+        self.chapitre = chapitre
+        self.aJour = aJour
+        self.fait = fait
+
+###############
+###Fonctions###
+###############
+
 ###Variables générales###
 
 def listMat(Cours):
     ListeMat = []
     for i in Cours:
-        matiere = i[0]
+        matiere = i.matiere
         v = 0
         for j in ListeMat:
             if j == matiere:
@@ -36,7 +51,7 @@ def loadCours():
         if (ln == ''):
             break
         data = ln.split()
-        Cours.append(data)
+        Cours.append(FicheRev(data[0],data[1],data[2],data[3]))
     f.close()
     return Cours
 
@@ -44,12 +59,10 @@ def loadCours():
 
 def saveCours(Cours):
     f = open("Save/Fiche.txt",'w')
-    f.write("Matiere chp fichable fait\n")
+    f.write("Matiere chp fait en_cours\n")
     for i in Cours:
-        f.write("{} {} {} {}\n".format(i[0],i[1],i[2],i[3]))
+        f.write("{} {} {} {}\n".format(i.matiere,i.chapitre,i.aJour,i.fait))
     f.close()
-
-###Fonction de tri###
 
 def CoursTri(Cours):
     CoursTri = []
@@ -58,8 +71,8 @@ def CoursTri(Cours):
     for i in Liste:
         chap = []
         for j in range(n):
-            if Cours[j][0] == i:
-                chap.append([int(Cours[j][1]),j])
+            if Cours[j].matiere == i:
+                chap.append([int(Cours[j].chapitre),j])
         chap = sorted(chap)
         Iter = []
         for j in range(len(chap)):
@@ -78,13 +91,11 @@ def NombreChapitre(Cours):
     k = 0
     for i in Liste:
         for j in range(n):
-            if Cours[j][0] == i:
-                if int(Cours[j][2]) == 0 and int(Cours[j][3]) == 0:
+            if Cours[j].matiere == i:
+                if int(Cours[j].aJour) == 0 and int(Cours[j].fait) == 0:
                     NbChp[k] += 1
         k += 1
     return NbChp
-
-###Fonction du prochain DS###
 
 def NextDS():
     ListeDS = loadDS()
@@ -92,15 +103,13 @@ def NextDS():
     MatiereDS = None
     a = int(time.localtime()[7])
     for i in ListeDS:
-        if i[2] == '0':
-            b = int(time.strptime(i[1],"%d-%m-%Y")[7])
+        if i.fait == '0':
+            b = int(time.strptime(i.date,"%d-%m-%Y")[7])
             Jours = b - a 
             if Jours <= 7:
                 MatiereDS = i[0]
                 break
     return MatiereDS
-
-###Fonction d'importance###
 
 def ChpRetard(Cours,NbChp,MatiereDS):
     Liste = listMat(Cours)
@@ -111,10 +120,10 @@ def ChpRetard(Cours,NbChp,MatiereDS):
     for i in Liste:
         m = 0
         for j in range(n):
-            if Cours[j][0] == i:
-                if int(Cours[j][2]) == 0 and int(Cours[j][3]) == 0:
+            if Cours[j].matiere == i:
+                if int(Cours[j].aJour) == 0 and int(Cours[j].fait) == 0:
                     imp[l] = NbChp[k] - m
-                    if MatiereDS == Cours[j][0]:
+                    if MatiereDS == Cours[j].matiere:
                         imp[l] += 1
                     l += 1
                     m += 1
@@ -150,17 +159,16 @@ def verifMatiere(matiere):
 
 def insertChp():
     selec = Tk()
+    selec.title("Ajouter un chapitre")
     l = LabelFrame(selec, text="Entrée du chapitre:")
     l.pack(side=TOP,padx=25,pady=[15,5])
     chap = StringVar()     #Nb du chapitre
-    matiere = StringVar()  #Matière (ex:MA0913) 
-    fichable = IntVar()    #Fiche à faire ou non? (0:oui ; 1:non)
+    matiere = StringVar()  #Matière (ex:MA0913)
     enregistrer = IntVar()
     chap.set("Chapitre")
     matiere.set("Matière")
     Entry(l,textvariable=matiere).pack(side=LEFT)
     Entry(l,textvariable=chap).pack(side=LEFT)
-    Checkbutton(l,text="Pas de fiche",variable=fichable).pack(side=LEFT)
     Button(selec,text="Annuler",command=selec.destroy,fg="red").pack(side=LEFT,padx=[25,5],pady=5)
     Button(selec,text="Aide",command=helpChp).pack(side=LEFT)
     Button(selec,text="Enregistrer",command=lambda: ActionBouton(selec,enregistrer),fg="green").pack(side=RIGHT,padx=25,pady=5)
@@ -172,10 +180,9 @@ def insertChp():
             if not(insert == None):
                 matiere.set(insert[0])
                 chap.set(insert[1])
-                fichable.set(insert[2])
                 verif = 1
         if verif == 1:
-            return [matiere.get(),chap.get(),fichable.get()]
+            return [matiere.get(),chap.get()]
 
 ###Ajout fiches###
 
@@ -188,8 +195,8 @@ def AjoutFiche(Cours):
     if n == 0:
         Label(selec,text="Pas de fiches à rendre").pack()
     for i in range(n):
-        if int(Cours[i][2]) == 0 and int(Cours[i][3]) == 0:
-            Checkbutton(l,text="{}, chapitre {}".format(Cours[i][0],Cours[i][1]),variable=checklist[i],justify=LEFT).pack(padx=[5,50])
+        if int(Cours[i].aJour) == 0 and int(Cours[i].fait) == 0:
+            Checkbutton(l,text="{}, chapitre {}".format(Cours[i].matiere,Cours[i].chapitre),variable=checklist[i],justify=LEFT).pack(padx=[5,50])
     valider = IntVar()
     Button(selec,text="Cancel",fg='red',command=selec.destroy).pack(side=LEFT,padx=5,pady=5)
     Button(selec,text="Valider",fg='green',command=lambda: ActionBouton(selec,valider)).pack(side=RIGHT,padx=5,pady=5)
@@ -202,19 +209,18 @@ def AjoutFiche(Cours):
                 Id.append(k)
             k += 1
         for i in Id:
-            Cours[i][3] = '1'
+            Cours[i].fait = '1'
     return Cours
-
-###Suppression de chapitres###
 
 def suppChp(Cours):
     n = len(Cours)
     selec = Tk()
+    selec.title("Supprimer un chapitre")
     l = LabelFrame(selec,text='Chapitre total:')
     l.pack(side=TOP,padx=10,pady=5)
     checklist = [IntVar() for x in range(n)]
     for i in range(n):
-        Checkbutton(l,text="{}, chapitre {}".format(Cours[i][0],Cours[i][1]),variable=checklist[i],justify=LEFT).pack(padx=[5,50])
+        Checkbutton(l,text="{}, chapitre {}".format(Cours[i].matiere,Cours[i].chapitre),variable=checklist[i],justify=LEFT).pack(padx=[5,50])
     supp = IntVar()
     Button(selec,text="Cancel",fg='red',command=selec.destroy).pack(side=LEFT,padx=5,pady=5)
     Button(selec,text="Supprimer",command=lambda: ActionBouton(selec,supp)).pack(side=RIGHT,padx=5,pady=5)
@@ -228,64 +234,96 @@ def suppChp(Cours):
 
 ###Fenetre principale###
 
-def MainFenetreFiche(Cours):
-    C = Cours
-    k = 0
+def FenetreFiche(cours):
+    C = cours
     n = len(C)
     colorCode = {1:"black",2:"orange",3:"red"}
     NbChp = NombreChapitre(C)
     MatiereDS = NextDS()
     fenetre = Tk()
+    fenetre.title("Informations fiches de révision")
     Label(fenetre,text="---Fiches de révision---").pack()
     l = LabelFrame(fenetre,text="Fiche à faire:")
+    l2 = LabelFrame(fenetre,text="Fiche à jour:")
+    l3 = LabelFrame(fenetre,text="Fiche faite:")
     l.pack(padx=[20,10],pady=[0,10])
-    for i in range(n):
-        fiche = C[i]
-        imp = ChpRetard(C,NbChp,MatiereDS)
-        if (int(fiche[2]) == 0 and int(fiche[3]) == 0):
-            if imp[k] > 3:
-                imp[k] = 3
-            color = colorCode[imp[k]]
-            if MatiereDS == fiche[0]:
-                Label(l,text="{}, chapitre {} /!\ Attention DS /!\ ".format(fiche[0],fiche[1]),justify='left',fg = color).pack(padx=[0,75])
-            else:
-                Label(l,text="{}, chapitre {}".format(fiche[0],fiche[1]),justify=LEFT,fg = color).pack(padx=[0,200])
-            k += 1
-    if k == 0:
-        Label(l,text='Pas de fiche à faire ÷)',fg='green').pack()
-    fichef = LabelFrame(fenetre,text="Fiche déjà réalisée:",fg="green")
-    fichef.pack(side=TOP,padx=[20,10],pady=[0,10])
+    l2.pack(padx=[20,10],pady=[0,10])
+    l3.pack(padx=[20,10],pady=[0,10])
+    Label(l,text='Matière').grid(row=0,column=0)
+    Label(l,text='     A jour     ').grid(row=0,column=1)
+    Label(l,text='     Finie     ').grid(row=0,column=2)
+    Label(l2,text='Matière').grid(row=0,column=0,padx=[0,10])
+    Label(l2,text='Reprendre').grid(row=0,column=1,padx=[0,135])
     k = 0
-    for i in range(n):
-        if int(C[i][3]) == 1:
-            Label(fichef,text="{}, chapitre {}".format(C[i][0],C[i][1]),justify=LEFT).pack(padx=[0,200])
-            k += 1
-    if k == 0:
-        Label(fichef,text="Pas de fiche encore faite ÷(").pack()
+    j1 = 1
+    j2 = 1
+    imp = ChpRetard(C,NbChp,MatiereDS)
+    checklist = [[IntVar(), IntVar()] for x in range(n)]
+    indices = []
+    indices2 = []
+    for i in C:
+        if (int(i.aJour) == 0 and int(i.fait) == 0):
+            if imp[j1-1] > 3:
+                imp[j1-1] = 3
+            color = colorCode[imp[j1-1]]
+            indices.append(k)
+            if MatiereDS == i.matiere:
+                Label(l,text="{}, chapitre {} /!\ Attention DS /!\ ".format(i.matiere,i.chapitre),justify='left',fg = color).grid(row=j1,column=0)
+            else:
+                Label(l,text="{}, chapitre {}".format(i.matiere,i.chapitre),justify=LEFT,fg = color).grid(row=j1,column=0)
+            Checkbutton(l,variable=checklist[k][0]).grid(row=j1,column=1)
+            Checkbutton(l,variable=checklist[k][1]).grid(row=j1,column=2)
+            j1+=1
+        elif int(i.aJour) == 1:
+            indices2.append(k)
+            Label(l2,text='{}, chapitre {}'.format(i.matiere,i.chapitre),justify=LEFT).grid(row=j2,column=0)
+            Checkbutton(l2,variable=checklist[k][0]).grid(row=j2,column=1,padx=[0,135])
+            j2 += 1
+        else:
+            Label(l3,text='{}, chapitre {}'.format(i.matiere,i.chapitre),justify=LEFT).pack(padx=[0,175])
+        k += 1
+    if len(imp) == 0:
+        Label(l,text='Pas de fiche à faire ÷)',fg='green').pack()
     supp = IntVar()
     Button(fenetre,text="Supprimer un chapitre",command=lambda: ActionBouton(fenetre,supp)).pack(side=TOP,pady=[0,10])
-    ajoutchp = IntVar()
+    actualiser = IntVar()
     ajoutf = IntVar()
     Button(fenetre,text="Quitter",fg="red",command=fenetre.destroy).pack(side=LEFT)
-    Button(fenetre,text="Ajouter un chapitre",command=lambda: ActionBouton(fenetre,ajoutchp)).pack(side=LEFT)
+    Button(fenetre,text="Actualiser",command=lambda: ActionBouton(fenetre,actualiser)).pack(side=RIGHT)
     Button(fenetre,text="Ajouter une fiche",command=lambda: ActionBouton(fenetre,ajoutf)).pack(side=RIGHT)
     fenetre.mainloop()
-    if ajoutchp.get() == 1:
+    if actualiser.get() == 1:
+        for i in indices:
+            if checklist[i][0].get() == 1:
+                C[i].aJour = '1'
+            elif checklist[i][1].get() == 1:
+                C[i].fait = '1'
+        for i in indices2:
+            if checklist[i][0].get() == 1:
+                C[i].aJour = '0'
+        return [1,C]
+    if ajoutf.get() == 1:
         insert = insertChp()
         if not(insert == None):
-            insert.append(0)
-            C.append(insert)
+            ajout = FicheRev(insert[0],insert[1],'0','0')
+            C.append(ajout)
             C = CoursTri(C)
-        C = MainFenetreFiche(C)
-    if ajoutf.get() == 1:
-        C = AjoutFiche(C)
-        C = MainFenetreFiche(C)
+        return [1,C]
     if supp.get() == 1:
         test = suppChp(C)
         if not(test == None):
             C = test
-        C = MainFenetreFiche(C)
-    return C
+        return [1,C]
+    return [0,C]
+
+def MainFenetreFiche():
+    Cours = loadCours()
+    v = [0,Cours]
+    while(1):
+        v = FenetreFiche(v[1])
+        if v[0] == 0:
+            break
+    saveCours(v[1])
 
 ###Vérification des sauvegardes###
 
@@ -298,10 +336,10 @@ def verifSave():
         f = open("Save/Fiche.txt",'w')
         f.close()
 
+##########
 ###Main###
+##########
 
 if __name__ == "__main__":
     verifSave()
-    Cours = loadCours()
-    Cours = MainFenetreFiche(Cours)
-    saveCours(Cours)
+    MainFenetreFiche()

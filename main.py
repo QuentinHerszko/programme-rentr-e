@@ -4,14 +4,19 @@ import numpy as np
 import webbrowser
 from tkinter import *
 from tkinter.messagebox import showerror, askyesno, showinfo
-from FicheRev import loadCours, MainFenetreFiche,saveCours
-from InfoDs import loadDS, DSTri, MainFenetreDS, saveDS
-from InfoProjet import loadProjet, ProjetTri, MainFenetreProjet, saveProjet
+from FicheRev import loadCours, MainFenetreFiche
+from InfoDs import loadDS, DSTri, MainFenetreDS
+from InfoProjet import loadProjet, ProjetTri, MainFenetreProjet
 from InfoTP import loadTP, TPTri, MainFenetreTP, saveTP, AjoutRapide
-from Moyenne_Gen import loadNotes, MainFenetreNote, saveNote, CalculeMoyenneG
-#from MaJ import Mise_a_jour
+from Moyenne_Gen import loadNotes, MainFenetreNote, CalculeMoyenneG
 
-###Action sur les boutons###
+class Devoir:
+    def __init__(self,matiere,date,desc):
+        self.matiere = matiere
+        self.date = date
+        self.desc = desc
+
+###Action sur les boutons###<<
 
 def ActionBouton(fenetre,variable):
     variable.set(1)
@@ -125,7 +130,7 @@ def TamaMoyen(frame):
                     Button(frame).grid(row=2,column=colonne)
 
 def BoboYeux():
-    showerror("","aïe ça fais super mal!!!\n~(>_<。)＼")
+    showerror("","aïe ça fait super mal!!!\n~(>_<。)＼")
 
 def nezTama(a,b,c,d,e,f,g):
     id = {0:'red',1:'green',2:'yellow',3:'blue',4:'pink',5:'cyan',6:'lime',7:'violet',8:'magenta',9:'orange',10:'purple'}
@@ -150,7 +155,7 @@ def nezTama(a,b,c,d,e,f,g):
 def saveDevoir(ListeDevoir):
     f = open("Save/Devoir.txt",'w')
     for i in ListeDevoir:
-        f.write("{};{};{};\n".format(i[0],i[1],i[2]))
+        f.write("{};{};{};\n".format(i.matiere,i.date,i.desc))
     f.close()
 
 def loadDevoir():
@@ -161,12 +166,13 @@ def loadDevoir():
         if data == '':
             break
         insert = data.split(';')
-        ListeDevoir.append(insert)
+        ListeDevoir.append(Devoir(insert[0],insert[1],insert[2]))
     return ListeDevoir
 
 def AjoutDevoir():
     ListeMois = {"Jan":1,"Feb":2,"Mar":3,"Apr":4,"May":5,"Jun":6,"Jul":7,"Aug":8,"Sep":9,"Oct":10,"Nov":11,"Dec":12}
     fenetre = Tk()
+    fenetre.title("Ajouter un devoir")
     matiere = StringVar()
     matiere.set("Matière")
     jours = StringVar()
@@ -202,11 +208,12 @@ def AjoutDevoir():
 def RenduDevoir(ListeDevoir):
     n = len(ListeDevoir)
     selec = Tk()
+    selec.title("Rendre un devoir")
     l = LabelFrame(selec,text='Devoir réalisé(s):')
     l.pack(side=TOP,padx=10,pady=5)
     checklist = [IntVar() for x in range(n)]
     for i in range(n):
-        Checkbutton(l,text="{}, pour le {}".format(ListeDevoir[i][0],ListeDevoir[i][1]),variable=checklist[i],justify=LEFT).pack(padx=[5,50])
+        Checkbutton(l,text="{}, pour le {}".format(ListeDevoir[i].matiere,ListeDevoir[i].date),variable=checklist[i],justify=LEFT).pack(padx=[5,50])
     valider = IntVar()
     Button(selec,text="Cancel",fg='red',command=selec.destroy).pack(side=LEFT,padx=5,pady=5)
     Button(selec,text="Valider",fg='green',command=lambda: ActionBouton(selec,valider)).pack(side=RIGHT,padx=5,pady=5)
@@ -222,45 +229,64 @@ def RenduDevoir(ListeDevoir):
         NewListe = ListeDevoir
     return NewListe
 
-def MainFenetreDevoir(ListeDevoir):
+def FenetreDevoir(ListeDevoir):
     L = ListeDevoir
     fenetre = Tk()
+    fenetre.title("Informations devoirs")
     if not(ListeDevoir == []):
         for i in ListeDevoir:
-            if i[1] == '?':
-                l = LabelFrame(fenetre,text="{}:".format(i[0]))
+            if i.date == '?':
+                l = LabelFrame(fenetre,text="{}:".format(i.matiere))
             else:
-                l = LabelFrame(fenetre,text="{} pour le {}".format(i[0],i[1]))
+                l = LabelFrame(fenetre,text="{} pour le {}".format(i.matiere,i.date))
             l.pack()
-            Label(l,text=i[2]).pack()
+            Label(l,text=i.desc).pack()
     else:
         Label(fenetre,text="Pas de travail à faire").pack()
     ajouter = IntVar()
     rendre = IntVar()
-    Button(fenetre,text="Quitter",fg='red',command=fenetre.destroy).pack(side=LEFT)
+    quitter = IntVar()
+    Button(fenetre,text="Quitter",fg='red',command=lambda: ActionBouton(fenetre,quitter)).pack(side=LEFT)
     Button(fenetre,text="Ajouter un devoir",fg='green',command=lambda: ActionBouton(fenetre,ajouter)).pack(side=RIGHT)
     Button(fenetre,text="Rendre un devoir",command=lambda: ActionBouton(fenetre,rendre)).pack(side=RIGHT)
     fenetre.mainloop()
+    if quitter.get() == 1:
+        return [0,L]
     if ajouter.get() == 1:
         insert = AjoutDevoir()
         if not(insert == None):
-            L.append(insert)
-        L = MainFenetreDevoir(L)
+            L.append(Devoir(insert[0],insert[1],insert[2]))
+        return [1,L]
     if rendre.get() == 1:
         L = RenduDevoir(L)
-        L = MainFenetreDevoir(L)
-    return L 
+        return [1,L]
+    return [0,L] 
+
+def MainFenetreDevoir():
+    ListeDevoir = loadDevoir()
+    v = [0,ListeDevoir]
+    while(1):
+        v = FenetreDevoir(v[1])
+        if v[0] == 0:
+            break
+    saveDevoir(v[1])
 
 ###Affichage des informations###
+
+def PtsAffiche():
+    [pts,nonv] = sysPoint() #n ne sert pas ici
+    v = 5 - nonv
+    showinfo("Nombre de points","Humeur: {}/{}".format(round(pts,2),v*25))
 
 def Informations(frame,humeur):
     couleur = {"heureux":"green","content":"lime","stressé":"orange","triste":"red"}
     prenom = loadPrenom()
-    Label(frame,text="{} est {}".format(prenom,humeur),fg=couleur[humeur]).pack()
+    #Label(frame,text="{} est {}".format(prenom,humeur),fg=couleur[humeur]).pack()
+    Button(frame,text="{} est {}".format(prenom,humeur),fg=couleur[humeur],bd=0,padx=0,pady=0,activeforeground=couleur[humeur],activebackground=frame['bg'],command=PtsAffiche).pack()
     ListeFiche = loadCours()
     comptFiche = 0
     for i in ListeFiche:
-        if i[2] == '0' and i[3] == '0':
+        if i.aJour == '0' and i.fait == '0':
             comptFiche += 1
     Label(frame,text="Fiche de révision à faire: {}".format(comptFiche),justify=LEFT).pack(padx=[0,110])
     ListeDevoir = loadDevoir()
@@ -277,44 +303,44 @@ def Informations(frame,humeur):
     ListeDS = DSTri(ListeDS)
     FutureDS = None
     for i in ListeDS:
-        if i[2] == '0':
+        if i.fait == '0':
             FutureDS = i
             break;
     if FutureDS == None:
         Label(frame,text="Pas de futur DS prévu",justify=LEFT).pack(padx=[0,145])
     else:
-        Label(frame,text="Futur DS: {}, {}".format(FutureDS[0],FutureDS[1]),justify=LEFT).pack(padx=[0,79])
+        Label(frame,text="Futur DS: {}, {}".format(FutureDS.matiere,FutureDS.date),justify=LEFT).pack(padx=[0,79])
     ListeProjet = loadProjet()
     ListeProjet = ProjetTri(ListeProjet)
     FutureProjet = None
     for i in ListeProjet:
-        if i[2] == '0':
+        if i.fait == '0':
             FutureProjet = i
             break;
     if FutureProjet == None:
         Label(frame,text="Pas de projet à rendre",justify=LEFT).pack(padx=[0,143])
     else:
-        Label(frame,text="Future projet à rendre: {}, {}".format(FutureProjet[0],FutureProjet[1]),justify=LEFT).pack()
+        Label(frame,text="Future projet à rendre: {}, {}".format(FutureProjet.matiere,FutureProjet.date),justify=LEFT).pack()
     ListeTP = loadTP()
     ListeTP = TPTri(ListeTP)
     FutureTP = None
     FutureTPTest = None
     for i in ListeTP:
-        if i[2] == '1':
+        if i.test == '1':
             FutureTPTest = i
             break
     for i in ListeTP:
-        if i[2] == '0':
+        if i.test == '0':
             FutureTP = i
             break
     if FutureTP == None:
         Label(frame,text="Pas de TP à rendre",justify=LEFT).pack(padx=[0,165])
     else:
-        Label(frame,text="Futur TP à rendre: {}, {}".format(FutureTP[0],FutureTP[1]),justify=LEFT).pack(padx=[0,23])
+        Label(frame,text="Futur TP à rendre: {}, {}".format(FutureTP.matiere,FutureTP.date),justify=LEFT).pack(padx=[0,23])
     if FutureTPTest == None:
         Label(frame,text="Pas de TP test à venir",justify=LEFT).pack(padx=[0,145])
     else:
-        Label(frame,text="Future TP test: {}, {}".format(FutureTPTest[0],FutureTPTest[1]),justify=LEFT).pack(padx=[0,52])
+        Label(frame,text="Future TP test: {}, {}".format(FutureTPTest.matiere,FutureTPTest.date),justify=LEFT).pack(padx=[0,52])
 
 ###Gestion de l'humeur du tamagotchi###
 
@@ -325,37 +351,27 @@ def sysPoint():
     if not(ListeFiche == []):
         comptFiche = 0
         for i in ListeFiche:
-            if i[2] == '0' and i[3] == '0':
+            if i.aJour == '0' and i.fait == '0':
                 comptFiche += 1
-        if comptFiche <=2:
-            Points += 25
-        elif 2 < comptFiche <= 4:
-            Points += 50/3
-        elif 4 < comptFiche <= 6:
-            Points += 25/3
+        Points += (1-(comptFiche/6))*25
     else:
         NbNonValid += 1
     ListeTP = loadTP()
     if not(ListeTP == []):
         comptTP = 0
         for i in ListeTP:
-            if i[2] == '0':
+            if i.test == '0':
                 comptTP += 1
-        if comptTP <= 1:
-            Points += 25
-        elif 1 < comptTP <= 2:
-            Points += 50/3
-        elif 2 < comptTP <= 3:
-            Points += 25/3
+        Points += (1-(comptTP/4))*25
     else:
         NbNonValid += 1
     ListeProjet = loadProjet()
     if not(ListeProjet == []):
         comptProjet = 0
         for i in ListeProjet:
-            if i[2] == '0':
+            if i.fait == '0':
                 comptProjet += 1
-        Points += (1 - comptProjet*(1/6)) * 25
+        Points += (1 - comptProjet/6) * 25
     else:
         NbNonValid += 1
     ListeNotes = loadNotes()
@@ -364,12 +380,19 @@ def sysPoint():
     else:
         MoyenneG = CalculeMoyenneG(ListeNotes)
         Points += (MoyenneG/20)*25
+    ListeDevoir = loadDevoir()
+    if ListeDevoir == []:
+        NbNonValid += 1
+    else:
+        n = len(ListeDevoir)
+        Points +=  (1 - (n/5))*25
     return [Points,NbNonValid]
 
 ###Prénom tamagotcho###
 
 def PrenomTamagotchi():
     fenetre = Tk()
+    fenetre.title("Nouveau nom")
     f = LabelFrame(fenetre,text="Donnez un nom à votre tamagotchi:")
     f.pack()
     Prenom = StringVar()
@@ -389,8 +412,10 @@ def PrenomTamagotchi():
 def MainFenetre():
     #systeme de pts
     [pts,nonV] = sysPoint()
+    TamaNom = loadPrenom()
     #création fenetre
     fenetre = Tk()
+    fenetre.title("Mon assistant {}".format(TamaNom))
     #Les variables d'actions
     Fiche = IntVar()
     Moyenne = IntVar()
@@ -417,7 +442,7 @@ def MainFenetre():
     Button(fenetre,text="Devoir à faire",command=lambda: ActionBouton(fenetre,devoir)).pack(side=RIGHT)
     Button(fenetre,text="Emplois du temps",command=lambda: ActionBouton(fenetre,edt)).pack(side=RIGHT)
     Button(fenetre,text="Modifier le prénom",command=lambda: ActionBouton(fenetre,ModifP)).pack(side=RIGHT)
-    nbValide = 4 - nonV
+    nbValide = 5 - nonV
     coeffHumeur = [0.75*nbValide*25,0.5*nbValide*25,0.25*nbValide*25]
     if pts >= coeffHumeur[0]:
         humeur = "heureux"
@@ -439,50 +464,38 @@ def MainFenetre():
     Button(f3,text="Information TP",command=lambda: ActionBouton(fenetre,TP),padx=26.5).pack(pady=[0,6])
     fenetre.mainloop()
     if Fiche.get() == 1:
-        ListeFiche = loadCours()
-        ListeFiche = MainFenetreFiche(ListeFiche)
-        saveCours(ListeFiche)
-        MainFenetre()
+        MainFenetreFiche()
+        return 1
     if DS.get() == 1:
-        ListeDS = loadDS()
-        ListeDS = MainFenetreDS(ListeDS)
-        saveDS(ListeDS)
-        MainFenetre()
+        MainFenetreDS()
+        return 1
     if Projet.get() == 1:
-        ListeProjet = loadProjet()
-        ListeProjet = MainFenetreProjet(ListeProjet)
-        saveProjet(ListeProjet)
-        MainFenetre()
+        MainFenetreProjet()
+        return 1
     if TP.get() == 1:
-        ListeTP = loadTP()
-        ListeTP = MainFenetreTP(ListeTP)
-        saveTP(ListeTP)
-        MainFenetre()
+        MainFenetreTP()
+        return 1
     if Moyenne.get() == 1:
-        ListeNotes = loadNotes()
-        ListeNotes = MainFenetreNote(ListeNotes)
-        saveNote(ListeNotes)
-        MainFenetre()
+        MainFenetreNote()
+        return 1
     if RapideTP.get() == 1:
         ListeTP = loadTP()
         insert = AjoutRapide()
         if not(insert == None):
             ListeTP.append(insert)
             saveTP(ListeTP)
-        MainFenetre()
+        return 1
     if ModifP.get() == 1:
         PrenomTamagotchi()
-        MainFenetre()
+        return 1
     if devoir.get() == 1:
-        ListeDevoir = loadDevoir()
-        ListeDevoir = MainFenetreDevoir(ListeDevoir)
-        saveDevoir(ListeDevoir)
-        MainFenetre()
+        MainFenetreDevoir()
+        return 1
     if edt.get() == 1:
         webbrowser.open("https://calendar.google.com/calendar/u/0/embed?src=vve57hbt6d2sm7kc3c82l6td4g@group.calendar.google.com&ctz=Europe/Paris&pli=1")
-        MainFenetre()
-    #if maj.get() == 1:
-        #Mise_a_jour()
+        return 1
+    return 0
+    
 
 ###Existence des sauvegardes###
 
@@ -538,8 +551,27 @@ def Tuto():
         fenetre.mainloop()
 
 if __name__ == "__main__":
-    ###Ajout pour faire l'application###
-    #os.chdir('/home/alexandre/Documents/ProgRentree')
+    ###Chemin vers l'executable###
+    cheminDepart = os.getcwd()
+    prenom = cheminDepart.split('/')[2]
+    if prenom == 'quentin':
+        NomProgramme = 'assistantjoseph'
+    elif prenom == 'lehastir':
+        NomProgramme = 'assistantsquishy'
+    else:
+        NomProgramme = 'assistantsimpy'
+    Nomapp = "/usr/share/applications/"+NomProgramme+".desktop"
+    f = open(Nomapp,'r')
+    while(1):
+        ln = f.readline()
+        if ln.split("=")[0] == 'Exec':
+            break
+    cheminExec = ln.split("=")[1]
+    chemin = ''
+    for i in cheminExec.split("/"):
+        if not(i == 'main\n'):
+            chemin += i +'/'
+    os.chdir(chemin)
 
     ###Programme###
     vSave = verifSave()
@@ -548,6 +580,11 @@ if __name__ == "__main__":
         Tuto()
         PrenomTamagotchi()
     if vProg == 1:
-        MainFenetre()
+        while(1):
+            v = 0
+            v = MainFenetre()
+            if (v == 0):
+                break
+        
 
 #pyinstaller --onefile main.py

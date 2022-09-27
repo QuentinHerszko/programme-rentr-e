@@ -3,6 +3,12 @@ from tkinter import *
 from tkinter.messagebox import showerror
 import os
 
+class DS:
+    def __init__(self,matiere,date,fait):
+        self.matiere = matiere
+        self.date = date
+        self.fait = fait
+
 ###Variables générales###
 
 def listMat():
@@ -24,7 +30,8 @@ def loadDS():
         ln = f.readline()
         if ln == '':
             break
-        ListeDS.append(ln.split())
+        data = ln.split()
+        ListeDS.append(DS(data[0],data[1],data[2]))
     f.close()
     return ListeDS
 
@@ -32,9 +39,9 @@ def loadDS():
 
 def saveDS(ListeDS):
     f = open("Save/DS.txt",'w')
-    f.write("Matiere date\n")
+    f.write("Matiere date fait\n")
     for i in ListeDS:
-        f.write("{} {} {}\n".format(i[0],i[1],i[2]))
+        f.write("{} {} {}\n".format(i.matiere,i.date,i.fait))
     f.close()
 
 ###Regarde si un ds est passé ou non###
@@ -43,9 +50,9 @@ def DsFait(ListeDS):
     L = []
     dateJour = time.localtime()
     for i in ListeDS:
-        dateDS = time.strptime(i[1],"%d-%m-%Y")
-        if dateDS < dateJour and int(i[2]) == 0:
-            i[2] = 1
+        dateDS = time.strptime(i.date,"%d-%m-%Y")
+        if dateDS < dateJour and int(i.fait) == 0:
+            i.fait = '1'
         L.append(i)
     return L
 
@@ -72,6 +79,7 @@ def verifAjoutDS(matiere,date):
 
 def AjoutDS():
     selec = Tk()
+    selec.title("Ajouter un DS")
     l = LabelFrame(selec, text="Entrée un DS:")
     l.pack(side=TOP,padx=25,pady=[15,5])
     date = StringVar()     #Nb du chapitre
@@ -104,11 +112,12 @@ def AjoutDS():
 def suppDS(ListeDS):
     n = len(ListeDS)
     selec = Tk()
+    selec.title("Supprimer un DS")
     l = LabelFrame(selec,text='DS total:')
     l.pack(side=TOP,padx=10,pady=5)
     checklist = [IntVar() for x in range(n)]
     for i in range(n):
-        Checkbutton(l,text="{}, le {}".format(ListeDS[i][0],ListeDS[i][1]),variable=checklist[i],justify=LEFT).pack(padx=[5,50])
+        Checkbutton(l,text="{}, le {}".format(ListeDS[i].matiere,ListeDS[i].date),variable=checklist[i],justify=LEFT).pack(padx=[5,50])
     supp = IntVar()
     Button(selec,text="Cancel",fg='red',command=selec.destroy).pack(side=LEFT,padx=5,pady=5)
     Button(selec,text="Supprimer",command=lambda: ActionBouton(selec,supp)).pack(side=RIGHT,padx=5,pady=5)
@@ -127,7 +136,7 @@ def DSTri(ListeDS):
     ListeTriee = []
     date = []
     for i in range(n):
-        date.append([time.strptime(ListeDS[i][1],"%d-%m-%Y"),i])
+        date.append([time.strptime(ListeDS[i].date,"%d-%m-%Y"),i])
     date = sorted(date)
     Iter = []
     for i in date:
@@ -138,10 +147,11 @@ def DSTri(ListeDS):
 
 ###Panneau principal###
 
-def MainFenetreDS(ListeDS):
+def FenetreDS(ListeDS):
     k1 = 0
     k2 = 0
     fenetre = Tk()
+    fenetre.title("Informations DS")
     Label(fenetre,text="---Information sur les DS---").pack()
     L = DsFait(ListeDS)
     L = DSTri(L)
@@ -150,11 +160,11 @@ def MainFenetreDS(ListeDS):
     fait = LabelFrame(fenetre,text="Ds déjà fait:")
     fait.pack(side=TOP,padx=[20,10],pady=[0,10])
     for i in L:
-        if int(i[2]) == 0:
-            Label(l,text="{} le {}".format(i[0],i[1])).pack(padx=[0,100])
+        if int(i.fait) == 0:
+            Label(l,text="{} le {}".format(i.matiere,i.date)).pack(padx=[0,100])
             k1 += 1
         else:
-            Label(fait,text="{} le {}".format(i[0],i[1])).pack(padx=[0,100])
+            Label(fait,text="{} le {}".format(i.matiere,i.date)).pack(padx=[0,100])
             k2 += 1
     if k1 == 0:
         Label(l,text="Pas de DS à venir!").pack()
@@ -169,15 +179,23 @@ def MainFenetreDS(ListeDS):
     if Ajout.get() == 1:
         insert = AjoutDS()
         if not(insert == None):
-            insert.append(0)
-            L.append(insert)
-        L = MainFenetreDS(L)
+            L.append(DS(insert[0],insert[1],'0'))
+        return [1,L]
     if supp.get() == 1:
         insert = suppDS(L)
         if not(insert == None):
             L = insert
-        L = MainFenetreDS(L)
-    return L
+        return [1,L]
+    return [0,L]
+
+def MainFenetreDS():
+    ListeDS = loadDS()
+    v = [0,ListeDS]
+    while(1):
+        v = FenetreDS(v[1])
+        if v[0] == 0:
+            break
+    saveDS(v[1])
 
 ###Vérification des sauvegardes###
 
@@ -192,10 +210,7 @@ def verifSave():
 
 if __name__ == '__main__':
     verifSave()
-    ListeDS = loadDS()
-    print(ListeDS)
-    ListeDS = MainFenetreDS(ListeDS)
-    saveDS(ListeDS)
+    MainFenetreDS()
 
     # time.strptime("date","format"), %Y = annee, %m = mois, %d = jour
     # time.localtime() = date du jour
