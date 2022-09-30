@@ -249,15 +249,18 @@ def FenetreFiche(cours):
     l.pack(padx=[20,10],pady=[0,10])
     l2.pack(padx=[20,10],pady=[0,10])
     l3.pack(padx=[20,10],pady=[0,10])
-    Label(l,text='Matière').grid(row=0,column=0)
-    Label(l,text='     A jour     ').grid(row=0,column=1)
-    Label(l,text='     Finie     ').grid(row=0,column=2)
     Label(l2,text='Matière').grid(row=0,column=0,padx=[0,10])
     Label(l2,text='Reprendre').grid(row=0,column=1,padx=[0,135])
     k = 0
     j1 = 1
     j2 = 1
     imp = ChpRetard(C,NbChp,MatiereDS)
+    if not(len(imp) == 0):
+        Label(l,text='Matière').grid(row=0,column=0)
+        Label(l,text='     A jour     ').grid(row=0,column=1)
+        Label(l,text='     Finie     ').grid(row=0,column=2)
+    else:
+        Label(l,text='Pas de fiche à faire ÷)',fg='green').pack()
     checklist = [[IntVar(), IntVar()] for x in range(n)]
     indices = []
     indices2 = []
@@ -282,8 +285,6 @@ def FenetreFiche(cours):
         else:
             Label(l3,text='{}, chapitre {}'.format(i.matiere,i.chapitre),justify=LEFT).pack(padx=[0,175])
         k += 1
-    if len(imp) == 0:
-        Label(l,text='Pas de fiche à faire ÷)',fg='green').pack()
     supp = IntVar()
     Button(fenetre,text="Supprimer un chapitre",command=lambda: ActionBouton(fenetre,supp)).pack(side=TOP,pady=[0,10])
     actualiser = IntVar()
