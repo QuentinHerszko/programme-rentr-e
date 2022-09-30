@@ -1,31 +1,42 @@
 # Programme de rentrée
 
-Ce programme python vous permettra de rester organiser lors de votre année. On peut y renseigner nos DS, nos fiches à faire, nos TP, etc...
-Le but est d'avoir une liste résumant tout ce que vous avez à faire pour rester à jour dans vos leçons et être sûr de ne pas être au retard.
+Le but de ce programme est simple, il est de rendre son tamagotchi heureux! Pour cela, il faut bien travailler car son humeur dépend de la charge de travail qu'il reste à effectuer.
+Le programme ne marche que pour __Linux__.
 
-__Principe__ : Vos devoirs sont liés à un tamagotchi. Celui-ci est plus ou moins content en fonction de la charge de travail que vous avez à faire.
-Plus vous avez de travail, plus le tamagotchi sera triste, moins vous en avez, plus il sera heureux ! Le but du jeu est de le maintenir le plus joyeux que possible.
+## Sous-programmes
 
-## Récupération du programme
+Le programme principal est diviser en plusieur script et ne peut pas marcher sans:
 
-__Prérequis__ : Avoir une clé SSH et avoir installer pyinstaller avec `pip install pyinstaller`
+* `FicheRev.py`
+* `InfoDS.py`
+* `InfoProjet.py`
+* `InfoTP.py`
+* `Moyenne_Gen.py`
 
-* Créer un dossier sur votre ordinateur où vous voulez mettre le programme.
-* Dans ce dossier, exécuter via un terminal sous bash : `git clone git@github.com:QuentinHerszko/programme-rentr-e.git`
-* Puis rentrer dans le dossier : `cd programme-rentr-e`
-* Ensuite, créer l'exécutable en tapant : `pyinstaller --onefile main.py`
-* Déplacer l'exécutable `main` dans le dossier `programme-rentr-e` (`mv -f dist/main .`)
+Chaque sous programme peut marcher indépendamment des autres sauf `FicheRev.py` et `InfoDs.py` qui marchent ensemble. Cela est pratique si vous voulez qu'une seule fonctionnalité du programme.
 
-Et voilà, vous pouvez maintenant lancer le programme en cliquant sur l'exécutable `main`.
+## Humeur du tamagotchi
 
-## Raccourcis par le terminal
+L'humeur du tamagotchi dépend des critères suivant :
 
-Vous pouvez directement accéder et mettre à jour le programme en créant des alias:
+* Le nombre de fiche de révision à faire
+* Le nombre de TP à faire
+* Le nombre de projet à faire
+* Le nombre de devoir à faire
+* La moyenne générale
 
-* Faire le raccourcis :
-  * Ouvrir le fichier .bashrc : `sudo nano .bashrc`
-  * Ajouter l'alias suivant : `alias NomAlias='cd TonChemin ; ./main'` où le chemin correspond au chemin où se trouve l'executable `main`
+## Création de l'application
 
-* Faire les mises à jours :
-  * Ouvrir le fichier .bashrc : `sudo nano .bashrc`
-  * Ajouter l'alias suivant : `alias NomAlias='cd TonChemin ; git pull ; rm main ; pyinstaller --onefile main.py ; mv -f dist/main . ; rm -rf dist ; rm -rf build ; ./main'` où le chemin correspond au chemin où se trouve l'executable `main`
+Créer l'application permet de l'avoir dans la liste des applications disponibles. De plus cela permet de pouvoir la mettre en favori pour qu'elle puisse apparaître dans la barre des tâches. Voici la commande:
+
+    ```sudo python3 MaJ.py app```
+    
+Attention! Il faut déjà avoir choisi un nom pour votre tamagotchi car il va vous être demandé.
+
+## Faire une mise à jour
+
+Pour faire une mise à jour, il faut simplement lancer le programme python MaJ.py comme ceci:*
+
+    ```python3 Maj.py```
+    
+Cela va mettre à jour à partir du git puis, le programme recrée l’exécutable.
