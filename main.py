@@ -16,6 +16,12 @@ class Devoir:
         self.date = date
         self.desc = desc
 
+class TP:
+    def __init__(self,matiere,date,test):
+        self.matiere = matiere
+        self.date = date
+        self.test = test
+
 ###Action sur les boutons###<<
 
 def ActionBouton(fenetre,variable):
@@ -420,7 +426,7 @@ def MainFenetre():
     Fiche = IntVar()
     Moyenne = IntVar()
     DS = IntVar()
-    TP = IntVar()
+    tps = IntVar()
     Projet = IntVar()
     edt = IntVar()
     #maj = IntVar()
@@ -461,7 +467,7 @@ def MainFenetre():
     Button(f3,text="Moyenne générale",command=lambda: ActionBouton(fenetre,Moyenne),padx=15).pack()
     Button(f3,text="Information DS",command=lambda: ActionBouton(fenetre,DS),padx=26.4).pack()
     Button(f3,text="Information Projet",command=lambda: ActionBouton(fenetre,Projet),padx=15.5).pack()
-    Button(f3,text="Information TP",command=lambda: ActionBouton(fenetre,TP),padx=26.5).pack(pady=[0,6])
+    Button(f3,text="Information TP",command=lambda: ActionBouton(fenetre,tps),padx=26.5).pack(pady=[0,6])
     fenetre.mainloop()
     if Fiche.get() == 1:
         MainFenetreFiche()
@@ -472,7 +478,7 @@ def MainFenetre():
     if Projet.get() == 1:
         MainFenetreProjet()
         return 1
-    if TP.get() == 1:
+    if tps.get() == 1:
         MainFenetreTP()
         return 1
     if Moyenne.get() == 1:
@@ -482,7 +488,7 @@ def MainFenetre():
         ListeTP = loadTP()
         insert = AjoutRapide()
         if not(insert == None):
-            ListeTP.append(insert)
+            ListeTP.append(TP(insert[0],insert[1],insert[2]))
             saveTP(ListeTP)
         return 1
     if ModifP.get() == 1:
