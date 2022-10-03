@@ -231,7 +231,7 @@ def FenetreTP(ListeTP):
     if rapide.get() == 1:
         insert = AjoutRapide()
         if not(insert == None):
-            L.append(insert)
+            L.append(TP(insert[0],insert[1],insert[2]))
         return [1,L]
     if supp.get() == 1:
         insert = suppTP(L)
