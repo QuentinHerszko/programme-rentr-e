@@ -136,30 +136,6 @@ def AjoutRapide():
             if verif == 1:
                 return [Matiere.get(),Ajout,0]
 
-###Suppression de TP###
-
-def suppTP(ListeTP):
-    n = len(ListeTP)
-    selec = Tk()
-    selec.title("Rendre un TP")
-    l = LabelFrame(selec,text='TP total:')
-    l.pack(side=TOP,padx=10,pady=5)
-    checklist = [IntVar() for x in range(n)]
-    if n == 0:
-        Label(selec,text="Pas de TP à rendre").pack()
-    for i in range(n):
-        Checkbutton(l,text="{}, le {}".format(ListeTP[i].matiere,ListeTP[i].date),variable=checklist[i],justify=LEFT).pack(padx=[5,50])
-    supp = IntVar()
-    Button(selec,text="Cancel",fg='red',command=selec.destroy).pack(side=LEFT,padx=5,pady=5)
-    Button(selec,text="Rendu!",command=lambda: ActionBouton(selec,supp)).pack(side=RIGHT,padx=5,pady=5)
-    selec.mainloop()
-    if supp.get() == 1:
-        ListeTPF = []
-        for i in range(n):
-            if checklist[i].get() == 0:
-                ListeTPF.append(ListeTP[i])
-        return ListeTPF
-
 ###Tri des TP###
 
 def TPTri(ListeTP):
@@ -195,33 +171,53 @@ def TPTestFait(ListeTP):
 def FenetreTP(ListeTP):
     k1 = 0
     k2 = 0
-    fenetre = Tk()
-    fenetre.title("Informations TP")
-    Label(fenetre,text="---Information sur les TP---").pack()
     L = TPTri(ListeTP)
     L = TPTestFait(L)
-    l = LabelFrame(fenetre,text="TP à venir:")
-    l.pack(padx=[20,10],pady=[0,10])
-    fait = LabelFrame(fenetre,text="TP test à venir:")
-    fait.pack(side=TOP,padx=[20,10],pady=[0,10])
+    n = len(L)
+    fenetre = Tk()
+    fenetre.title("Informations TP")
+    frame1 = Frame(fenetre,bg = '#433e3f')
+    frame1.pack()
+    ftit = Frame(frame1,bg="#1d3557")
+    ftit.grid(row=0,sticky='nwes',columnspan=2)
+    Label(ftit,text="Informations sur les TP",bg="#1d3557",fg="#f4ebe8",font=('calibri',25,'bold','underline'),pady=20,padx=10).pack()
+    Label(frame1,text="Matières",font=('calibri',15,'bold'),justify=LEFT,bg="#c73e1d",fg="#f4ebe8").grid(row=1,column=0,sticky="nsew")
+    Label(frame1,text="rendu",font=('calibri',15,'bold'),justify=LEFT,padx=0,bg="#c73e1d",fg="#f4ebe8").grid(row=1,column=1,sticky='nswe')
+    checklist = [IntVar() for x in range(n)]
+    indice = 0
+    ligne = 2
     for i in L:
         if int(i.test) == 0:
-            Label(l,text="{} le {}".format(i.matiere,i.date)).pack(padx=[0,100])
+            Label(frame1,text="{} pour le {}".format(i.matiere,i.date),bg="#f4ebe8",font=('calibri',15),justify=LEFT).grid(row=ligne,column=0,sticky='nswe')
+            Checkbutton(frame1,bg="#f4ebe8",highlightbackground='#f4ebe8',variable=checklist[indice]).grid(row=ligne,column=1,sticky='nswe')
             k1 += 1
-        else:
-            Label(fait,text="{} le {}".format(i.matiere,i.date)).pack(padx=[0,100])
-            k2 += 1
+            ligne += 1
+        indice += 1
     if k1 == 0:
-        Label(l,text="Pas de TP à venir!").pack()
+        Label(frame1,text="Pas de Tp à faire!",bg="#f4ebe8",font=('calibri',15),justify=LEFT).grid(row=ligne,columnspan=2,sticky='nswe')
+        ligne += 1
+    Label(frame1,text="TP test à venir",bg="#1d3557",fg="#f4ebe8",font=('calibri',20,'bold','underline'),pady=5).grid(row=ligne,sticky='nsew',columnspan=2)
+    Label(frame1,text="Matières",font=('calibri',15,'bold'),justify=LEFT,bg="#c73e1d",fg="#f4ebe8").grid(row=ligne+1,column=0,sticky="nsew")
+    Label(frame1,text=" ",font=('calibri',15,'bold'),justify=LEFT,bg="#c73e1d",fg="#f4ebe8").grid(row=ligne+1,column=1,sticky="nsew")
+    ligne = ligne + 2
+    for i in L:
+        if int(i.test) == 1:
+            Label(frame1,text="{} pour le {}".format(i.matiere,i.date),bg="#f4ebe8",font=('calibri',15),justify=LEFT).grid(row=ligne,column=0,sticky='nswe')
+            Label(frame1,text=" ",bg="#f4ebe8",font=('calibri',15),justify=LEFT).grid(row=ligne,column=1,sticky='nswe')
+            k2 += 1
+            ligne += 1
     if k2 == 0:
-        Label(fait,text="Pas de TP test à venir!").pack()
+        Label(frame1,text="Pas de TP test à venir!",bg="#f4ebe8",font=('calibri',15),justify=LEFT).grid(row=ligne,columnspan=2,sticky='nswe')
+        ligne += 1
+    fbut = Frame(frame1,bg='#433e3f')
+    fbut.grid(row=ligne,columnspan=2,sticky='nswe')
     Ajout = IntVar()
     rapide = IntVar()
-    supp = IntVar()
-    Button(fenetre,text="Rendre un TP",command=lambda: ActionBouton(fenetre,supp)).pack(side=TOP,pady=[0,10])
-    Button(fenetre,text="Quitter", fg='red',command=fenetre.destroy).pack(side=LEFT)
-    Button(fenetre,text="Ajouter un TP",command=lambda: ActionBouton(fenetre,Ajout)).pack(side=RIGHT)
-    Button(fenetre,text="Ajout rapide",command=lambda: ActionBouton(fenetre,rapide)).pack(side=RIGHT)
+    Actualiser = IntVar()
+    Button(fbut,text="Quitter",bg='#d62828',fg="#f4ebe8",highlightbackground='#433e3f',command=fenetre.destroy).pack(side=LEFT,pady=10,padx=5)
+    Button(fbut,text="Actualiser",highlightbackground='#433e3f',bg="#f4ebe8",command=lambda: ActionBouton(fenetre,Actualiser)).pack(side=RIGHT,pady=10,padx=[0,5])
+    Button(fbut,text="Ajout rapide",highlightbackground='#433e3f',bg="#f4ebe8",command=lambda: ActionBouton(fenetre,rapide)).pack(side=RIGHT,pady=10,padx=[0,5])
+    Button(fbut,text="Ajouter",highlightbackground='#433e3f',bg="#f4ebe8",command=lambda: ActionBouton(fenetre,Ajout)).pack(side=RIGHT,pady=10,padx=[0,5])
     fenetre.mainloop()
     if Ajout.get() == 1:
         insert = AjoutTP()
@@ -233,11 +229,12 @@ def FenetreTP(ListeTP):
         if not(insert == None):
             L.append(TP(insert[0],insert[1],insert[2]))
         return [1,L]
-    if supp.get() == 1:
-        insert = suppTP(L)
-        if not(insert == None):
-            L = insert
-        return [1,L]
+    if Actualiser.get() == 1:
+        newL = []
+        for i in range(n):
+            if int(checklist[i].get()) == 0:
+                newL.append(L[i])
+        return [1,newL]
     return [0,L]
 
 def MainFenetreTP():

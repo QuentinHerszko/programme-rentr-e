@@ -149,32 +149,33 @@ def DSTri(ListeDS):
 
 def FenetreDS(ListeDS):
     k1 = 0
-    k2 = 0
-    fenetre = Tk()
-    fenetre.title("Informations DS")
-    Label(fenetre,text="---Information sur les DS---").pack()
     L = DsFait(ListeDS)
     L = DSTri(L)
-    l = LabelFrame(fenetre,text="DS à venir:")
-    l.pack(padx=[20,10],pady=[0,10])
-    fait = LabelFrame(fenetre,text="Ds déjà fait:")
-    fait.pack(side=TOP,padx=[20,10],pady=[0,10])
+    fenetre = Tk()
+    frame1 = Frame(fenetre,bg = '#433e3f')
+    frame1.pack()
+    ftit = Frame(frame1,bg="#1d3557")
+    ftit.grid(row=0,sticky='nwes',columnspan=2)
+    Label(ftit,text="Informations DS",bg="#1d3557",fg="#f4ebe8",font=('calibri',25,'bold','underline'),pady=20,padx=10).pack()
+    Label(frame1,text="Matières",font=('calibri',15,'bold'),justify=LEFT,bg="#c73e1d",fg="#f4ebe8").grid(row=1,column=0,sticky="nsew")
+    Label(frame1,text="Dates",font=('calibri',15,'bold'),justify=LEFT,padx=0,bg="#c73e1d",fg="#f4ebe8").grid(row=1,column=1,sticky='nswe')
+    ligne = 2
     for i in L:
         if int(i.fait) == 0:
-            Label(l,text="{} le {}".format(i.matiere,i.date)).pack(padx=[0,100])
+            Label(frame1,text="{}".format(i.matiere),bg="#f4ebe8",font=('calibri',15),justify=LEFT).grid(row=ligne,column=0,sticky='nswe')
+            Label(frame1,text="{}".format(i.date),bg="#f4ebe8",font=('calibri',15),justify=LEFT).grid(row=ligne,column=1,sticky='nswe')
+            ligne += 1
             k1 += 1
-        else:
-            Label(fait,text="{} le {}".format(i.matiere,i.date)).pack(padx=[0,100])
-            k2 += 1
     if k1 == 0:
-        Label(l,text="Pas de DS à venir!").pack()
-    if k2 == 0:
-        Label(fait,text="Pas encore de DS fait").pack()
+        Label(frame1,text="Pas de DS à venir!",bg="#f4ebe8",font=('calibri',15),justify=LEFT).grid(row=ligne,columnspan=2,sticky='nswe')
+        ligne += 1
+    fbut = Frame(frame1,bg='#433e3f')
+    fbut.grid(row=ligne,columnspan=2,sticky='nswe')
     Ajout = IntVar()
     supp = IntVar()
-    Button(fenetre,text="Supprimer un DS",command=lambda: ActionBouton(fenetre,supp)).pack(side=TOP,pady=[0,10])
-    Button(fenetre,text="Quitter", fg='red',command=fenetre.destroy).pack(side=LEFT)
-    Button(fenetre,text="Ajouter un DS",command=lambda: ActionBouton(fenetre,Ajout)).pack(side=RIGHT)
+    Button(fbut,text="Quitter",bg='#d62828',fg="#f4ebe8",highlightbackground='#433e3f',command=fenetre.destroy).pack(side=LEFT,pady=10,padx=5)
+    Button(fbut,text="Ajouter",highlightbackground='#433e3f',bg="#f4ebe8",command=lambda: ActionBouton(fenetre,Ajout)).pack(side=RIGHT,pady=10,padx=[0,5])
+    Button(fbut,text="Supprimer",highlightbackground='#433e3f',bg="#f4ebe8",command=lambda: ActionBouton(fenetre,supp)).pack(side=RIGHT,pady=10,padx=[0,5])
     fenetre.mainloop()
     if Ajout.get() == 1:
         insert = AjoutDS()

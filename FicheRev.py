@@ -241,57 +241,63 @@ def FenetreFiche(cours):
     NbChp = NombreChapitre(C)
     MatiereDS = NextDS()
     fenetre = Tk()
-    fenetre.title("Informations fiches de révision")
-    Label(fenetre,text="---Fiches de révision---").pack()
-    l = LabelFrame(fenetre,text="Fiche à faire:")
-    l2 = LabelFrame(fenetre,text="Fiche à jour:")
-    l3 = LabelFrame(fenetre,text="Fiche faite:")
-    l.pack(padx=[20,10],pady=[0,10])
-    l2.pack(padx=[20,10],pady=[0,10])
-    l3.pack(padx=[20,10],pady=[0,10])
-    Label(l2,text='Matière').grid(row=0,column=0,padx=[0,10])
-    Label(l2,text='Reprendre').grid(row=0,column=1,padx=[0,135])
-    k = 0
-    j1 = 1
-    j2 = 1
+    frame1 = Frame(fenetre,bg="#433e3f")
+    frame1.pack()
+    ftit = Frame(frame1,bg="#1d3557")
+    ftit.grid(row=0,sticky='nwes',columnspan=3)
+    Label(ftit,text="Informations fiches de révision",bg="#1d3557",fg="#f4ebe8",font=('calibri',25,'bold','underline'),pady=20,padx=10).pack()
+    Label(frame1,text="Matières",font=('calibri',15,'bold'),justify=LEFT,bg="#c73e1d",fg="#f4ebe8").grid(row=1,column=0,sticky="nsew")
+    Label(frame1,text="à jour",font=('calibri',15,'bold'),justify=LEFT,padx=0,bg="#c73e1d",fg="#f4ebe8").grid(row=1,column=1,sticky='nswe')
+    Label(frame1,text="Terminer",font=('calibri',15,'bold'),justify=RIGHT,padx=10,bg="#c73e1d",fg="#f4ebe8").grid(row=1,column=2,sticky='nswe')
     imp = ChpRetard(C,NbChp,MatiereDS)
-    if not(len(imp) == 0):
-        Label(l,text='Matière').grid(row=0,column=0)
-        Label(l,text='     A jour     ').grid(row=0,column=1)
-        Label(l,text='     Finie     ').grid(row=0,column=2)
-    else:
-        Label(l,text='Pas de fiche à faire ÷)',fg='green').pack()
+    k = 0
+    indice = 0
     checklist = [[IntVar(), IntVar()] for x in range(n)]
     indices = []
     indices2 = []
+    ligne = 2
     for i in C:
         if (int(i.aJour) == 0 and int(i.fait) == 0):
-            if imp[j1-1] > 3:
-                imp[j1-1] = 3
-            color = colorCode[imp[j1-1]]
-            indices.append(k)
+            if imp[k] > 3:
+                imp[k] = 3
+            color = colorCode[imp[k]]
+            indices.append(indice)
             if MatiereDS == i.matiere:
-                Label(l,text="{}, chapitre {} /!\ Attention DS /!\ ".format(i.matiere,i.chapitre),justify='left',fg = color).grid(row=j1,column=0)
+                Label(frame1,text="{}, chapitre {} /!\ Attention DS /!\ ".format(i.matiere,i.chapitre),justify='left',fg = color).grid(row=ligne,column=0,sticky='nswe')
             else:
-                Label(l,text="{}, chapitre {}".format(i.matiere,i.chapitre),justify=LEFT,fg = color).grid(row=j1,column=0)
-            Checkbutton(l,variable=checklist[k][0]).grid(row=j1,column=1)
-            Checkbutton(l,variable=checklist[k][1]).grid(row=j1,column=2)
-            j1+=1
-        elif int(i.aJour) == 1:
-            indices2.append(k)
-            Label(l2,text='{}, chapitre {}'.format(i.matiere,i.chapitre),justify=LEFT).grid(row=j2,column=0)
-            Checkbutton(l2,variable=checklist[k][0]).grid(row=j2,column=1,padx=[0,135])
-            j2 += 1
-        else:
-            Label(l3,text='{}, chapitre {}'.format(i.matiere,i.chapitre),justify=LEFT).pack(padx=[0,175])
-        k += 1
+                Label(frame1,text="{}, chapitre {}".format(i.matiere,i.chapitre),bg="#f4ebe8",font=('calibri',15),justify=LEFT).grid(row=ligne,column=0,sticky='nswe')
+            Checkbutton(frame1,bg="#f4ebe8",highlightbackground='#f4ebe8',variable=checklist[indice][0]).grid(row=ligne,column=1,sticky='nswe')
+            Checkbutton(frame1,bg="#f4ebe8",highlightbackground='#f4ebe8',variable=checklist[indice][1]).grid(row=ligne,column=2,sticky='nswe')
+            k += 1
+            ligne += 1
+        indice += 1
+    if len(imp) == 0:
+        Label(frame1,text="Pas de fiche à faire!",bg="#f4ebe8",font=('calibri',15),justify=LEFT).grid(row=ligne,columnspan=3,sticky='nswe')
+        ligne += 1
+    Label(frame1,text="Fiche à reprendre",bg="#1d3557",fg="#f4ebe8",font=('calibri',20,'bold','underline'),pady=5).grid(row=ligne,sticky='nsew',columnspan=3)
+    Label(frame1,text="Matières",font=('calibri',15,'bold'),justify=LEFT,bg="#c73e1d",fg="#f4ebe8").grid(row=ligne+1,column=0,sticky="nsew")
+    Label(frame1,text="Reprendre",font=('calibri',15,'bold'),padx=10,bg="#c73e1d",fg="#f4ebe8").grid(row=ligne+1,column=1,sticky='nswe',columnspan=2)
+    indice = 0
+    ligne += 2
+    for i in C:
+        if int(i.aJour) == 1:
+            indices2.append(indice)
+            Label(frame1,text="{}, chapitre {}".format(i.matiere,i.chapitre),bg="#f4ebe8",font=('calibri',15),justify=LEFT).grid(row=ligne,column=0,sticky='nswe')
+            Checkbutton(frame1,bg="#f4ebe8",highlightbackground='#f4ebe8',variable=checklist[indice][0]).grid(row=ligne,column=1,sticky='nswe',columnspan=2)
+            ligne += 1
+        indice += 1
+    if indices2 == []:
+        Label(frame1,text="Pas de fiche à reprendre!",bg="#f4ebe8",font=('calibri',15),justify=LEFT).grid(row=ligne,columnspan=3,sticky='nswe')
+        ligne += 1
+    fbut = Frame(frame1,bg='#433e3f')
+    fbut.grid(row=ligne,columnspan=3,sticky='nswe')
     supp = IntVar()
-    Button(fenetre,text="Supprimer un chapitre",command=lambda: ActionBouton(fenetre,supp)).pack(side=TOP,pady=[0,10])
     actualiser = IntVar()
     ajoutf = IntVar()
-    Button(fenetre,text="Quitter",fg="red",command=fenetre.destroy).pack(side=LEFT)
-    Button(fenetre,text="Actualiser",command=lambda: ActionBouton(fenetre,actualiser)).pack(side=RIGHT)
-    Button(fenetre,text="Ajouter une fiche",command=lambda: ActionBouton(fenetre,ajoutf)).pack(side=RIGHT)
+    Button(fbut,text="Quitter",bg='#d62828',fg="#f4ebe8",highlightbackground='#433e3f',command=fenetre.destroy).pack(side=LEFT,pady=10,padx=5)
+    Button(fbut,text="Actualiser",highlightbackground='#433e3f',bg="#f4ebe8",command=lambda: ActionBouton(fenetre,actualiser)).pack(side=RIGHT,pady=10,padx=[0,5])
+    Button(fbut,text="Ajouter",highlightbackground='#433e3f',bg="#f4ebe8",command=lambda: ActionBouton(fenetre,ajoutf)).pack(side=RIGHT,pady=10,padx=[0,5])
+    Button(fbut,text="Supprimer",highlightbackground='#433e3f',bg="#f4ebe8",command=lambda: ActionBouton(fenetre,supp)).pack(side=RIGHT,pady=10,padx=[0,5])
     fenetre.mainloop()
     if actualiser.get() == 1:
         for i in indices:

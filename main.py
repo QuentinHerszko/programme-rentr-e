@@ -37,22 +37,22 @@ def loadPrenom():
     return Prenom
 
 def TamaContent(frame,couleur):
-    for ligne in [0,1,3,4,5]:
-        if ligne == 1:
+    for ligne in [1,2,4,5,6]:
+        if ligne == 2:
             a = Button(frame,background=couleur,command=BoboYeux)
             b = Button(frame,background=couleur,command=BoboYeux)
             a.grid(row=ligne,column=2)
             b.grid(row=ligne,column=4)
             for colonne in [0,1,3,5,6]:
                 Button(frame).grid(row=ligne,column=colonne)
-        elif ligne == 3:
+        elif ligne == 4:
             c = Button(frame,background=couleur)
             d = Button(frame,background=couleur)
             c.grid(row=ligne,column=1)
             d.grid(row=ligne,column=5)
             for colonne in [0,2,3,4,6]:
                 Button(frame).grid(row=ligne,column=colonne)
-        elif ligne == 4:
+        elif ligne == 5:
             e = Button(frame,background=couleur)
             f = Button(frame,background=couleur)
             g = Button(frame,background=couleur)
@@ -66,27 +66,27 @@ def TamaContent(frame,couleur):
                 Button(frame).grid(row=ligne,column=colonne)
     for colonne in range(7):
         if (colonne == 3):
-            Button(frame,command=lambda: nezTama(a,b,c,d,e,f,g)).grid(row=2,column=colonne)
+            Button(frame,command=lambda: nezTama(a,b,c,d,e,f,g)).grid(row=3,column=colonne)
         else:
-            Button(frame).grid(row=2,column=colonne)
+            Button(frame).grid(row=3,column=colonne)
 
 def TamaTriste(frame):
-    for ligne in [0,1,3,4,5]:
-        if ligne == 1:
+    for ligne in [1,2,4,5,6]:
+        if ligne == 2:
             a = Button(frame,background="red",command=BoboYeux)
             b = Button(frame,background="red",command=BoboYeux)
             a.grid(row=ligne,column=2)
             b.grid(row=ligne,column=4)
             for colonne in [0,1,3,5,6]:
                 Button(frame).grid(row=ligne,column=colonne)
-        elif ligne == 4:
+        elif ligne == 5:
             c = Button(frame,background="red")
             d = Button(frame,background="red")
             c.grid(row=ligne,column=1)
             d.grid(row=ligne,column=5)
             for colonne in [0,2,3,4,6]:
                 Button(frame).grid(row=ligne,column=colonne)
-        elif ligne == 3:
+        elif ligne == 4:
             e = Button(frame,background="red")
             f = Button(frame,background="red")
             g = Button(frame,background="red")
@@ -100,20 +100,20 @@ def TamaTriste(frame):
                 Button(frame).grid(row=ligne,column=colonne)
     for colonne in range(7):
         if (colonne == 3):
-            Button(frame,command=lambda: nezTama(a,b,c,d,e,f,g)).grid(row=2,column=colonne)
+            Button(frame,command=lambda: nezTama(a,b,c,d,e,f,g)).grid(row=3,column=colonne)
         else:
-            Button(frame).grid(row=2,column=colonne)
+            Button(frame).grid(row=3,column=colonne)
 
 def TamaMoyen(frame):
-    for ligne in [0,1,3,4,5]:
-        if ligne == 1:
+    for ligne in [1,2,4,5,6]:
+        if ligne == 2:
             a = Button(frame,background="orange",command=BoboYeux)
             b = Button(frame,background="orange",command=BoboYeux)
             a.grid(row=ligne,column=2)
             b.grid(row=ligne,column=4)
             for colonne in [0,1,3,5,6]:
                 Button(frame).grid(row=ligne,column=colonne)
-        elif ligne == 3:
+        elif ligne == 4:
             c = Button(frame,background="orange")
             d = Button(frame,background="orange")
             e = Button(frame,background="orange")
@@ -131,9 +131,9 @@ def TamaMoyen(frame):
                 Button(frame).grid(row=ligne,column=colonne)
     for colonne in range(7):
                 if (colonne == 3):
-                    Button(frame,command=lambda: nezTama(a,b,c,d,e,f,g)).grid(row=2,column=colonne)
+                    Button(frame,command=lambda: nezTama(a,b,c,d,e,f,g)).grid(row=3,column=colonne)
                 else:
-                    Button(frame).grid(row=2,column=colonne)
+                    Button(frame).grid(row=3,column=colonne)
 
 def BoboYeux():
     showerror("","aïe ça fait super mal!!!\n~(>_<。)＼")
@@ -239,25 +239,32 @@ def FenetreDevoir(ListeDevoir):
     L = ListeDevoir
     fenetre = Tk()
     fenetre.title("Informations devoirs")
-    if not(ListeDevoir == []):
-        for i in ListeDevoir:
-            if i.date == '?':
-                l = LabelFrame(fenetre,text="{}:".format(i.matiere))
-            else:
-                l = LabelFrame(fenetre,text="{} pour le {}".format(i.matiere,i.date))
-            l.pack()
-            Label(l,text=i.desc).pack()
-    else:
-        Label(fenetre,text="Pas de travail à faire").pack()
+    frame1 = Frame(fenetre,bg = '#433e3f')
+    frame1.pack()
+    ftit = Frame(frame1,bg="#1d3557")
+    ftit.grid(row=0,sticky='nwes')
+    Label(ftit,text="Informations Devoir",bg="#1d3557",fg="#f4ebe8",font=('calibri',25,'bold','underline'),pady=20,padx=10).pack()
+    ligne = 1
+    for i in ListeDevoir:
+        if i.date == '?':
+            Label(frame1,text="{}".format(i.matiere),font=('calibri',15,'bold'),justify=LEFT,bg="#c73e1d",fg="#f4ebe8").grid(row=ligne,sticky="nsew")
+            ligne += 1
+        else:
+            Label(frame1,text="{} pour le {}".format(i.matiere,i.date),font=('calibri',15,'bold'),justify=LEFT,bg="#c73e1d",fg="#f4ebe8").grid(row=ligne,sticky="nsew")
+            ligne += 1
+        Label(frame1,text="{}".format(i.desc),bg="#f4ebe8",font=('calibri',15),justify=LEFT).grid(row=ligne,sticky='nswe')
+        ligne += 1
+    if ListeDevoir == []:
+        Label(frame1,text="Pas de Devoir à faire!",bg="#f4ebe8",font=('calibri',15),justify=LEFT).grid(row=ligne,sticky='nswe')
+        ligne += 1
+    fbut = Frame(frame1,bg='#433e3f')
+    fbut.grid(row=ligne,columnspan=2,sticky='nswe')
     ajouter = IntVar()
     rendre = IntVar()
-    quitter = IntVar()
-    Button(fenetre,text="Quitter",fg='red',command=lambda: ActionBouton(fenetre,quitter)).pack(side=LEFT)
-    Button(fenetre,text="Ajouter un devoir",fg='green',command=lambda: ActionBouton(fenetre,ajouter)).pack(side=RIGHT)
-    Button(fenetre,text="Rendre un devoir",command=lambda: ActionBouton(fenetre,rendre)).pack(side=RIGHT)
+    Button(fbut,text="Quitter",bg='#d62828',fg="#f4ebe8",highlightbackground='#433e3f',command=fenetre.destroy).pack(side=LEFT,pady=10,padx=5)
+    Button(fbut,text="Ajouter",highlightbackground='#433e3f',bg="#f4ebe8",command=lambda: ActionBouton(fenetre,ajouter)).pack(side=RIGHT,pady=10,padx=[0,5])
+    Button(fbut,text="Rendre",highlightbackground='#433e3f',bg="#f4ebe8",command=lambda: ActionBouton(fenetre,rendre)).pack(side=RIGHT,pady=10,padx=[0,5])
     fenetre.mainloop()
-    if quitter.get() == 1:
-        return [0,L]
     if ajouter.get() == 1:
         insert = AjoutDevoir()
         if not(insert == None):
@@ -283,70 +290,6 @@ def PtsAffiche():
     [pts,nonv] = sysPoint() #n ne sert pas ici
     v = 5 - nonv
     showinfo("Nombre de points","Humeur: {}/{}".format(round(pts,2),v*25))
-
-def Informations(frame,humeur):
-    couleur = {"heureux":"green","content":"lime","stressé":"orange","triste":"red"}
-    prenom = loadPrenom()
-    #Label(frame,text="{} est {}".format(prenom,humeur),fg=couleur[humeur]).pack()
-    Button(frame,text="{} est {}".format(prenom,humeur),fg=couleur[humeur],bd=0,padx=0,pady=0,activeforeground=couleur[humeur],activebackground=frame['bg'],command=PtsAffiche).pack()
-    ListeFiche = loadCours()
-    comptFiche = 0
-    for i in ListeFiche:
-        if i.aJour == '0' and i.fait == '0':
-            comptFiche += 1
-    Label(frame,text="Fiche de révision à faire: {}".format(comptFiche),justify=LEFT).pack(padx=[0,110])
-    ListeDevoir = loadDevoir()
-    comptDevoir = len(ListeDevoir)
-    Label(frame,text="Devoir à faire: {}".format(comptDevoir),justify=LEFT).pack(padx=[0,180])
-    ListeNotes = loadNotes()
-    MoyenneG = CalculeMoyenneG(ListeNotes)
-    if MoyenneG == None:
-        Label(frame,text="Pas de notes",justify=LEFT).pack(padx=[0,200])
-    else:
-        MoyenneG = round(MoyenneG,2)
-        Label(frame,text="Moyenne générale: {}/20".format(MoyenneG),justify=LEFT).pack(padx=[0,100])
-    ListeDS = loadDS()
-    ListeDS = DSTri(ListeDS)
-    FutureDS = None
-    for i in ListeDS:
-        if i.fait == '0':
-            FutureDS = i
-            break;
-    if FutureDS == None:
-        Label(frame,text="Pas de futur DS prévu",justify=LEFT).pack(padx=[0,145])
-    else:
-        Label(frame,text="Futur DS: {}, {}".format(FutureDS.matiere,FutureDS.date),justify=LEFT).pack(padx=[0,79])
-    ListeProjet = loadProjet()
-    ListeProjet = ProjetTri(ListeProjet)
-    FutureProjet = None
-    for i in ListeProjet:
-        if i.fait == '0':
-            FutureProjet = i
-            break;
-    if FutureProjet == None:
-        Label(frame,text="Pas de projet à rendre",justify=LEFT).pack(padx=[0,143])
-    else:
-        Label(frame,text="Future projet à rendre: {}, {}".format(FutureProjet.matiere,FutureProjet.date),justify=LEFT).pack()
-    ListeTP = loadTP()
-    ListeTP = TPTri(ListeTP)
-    FutureTP = None
-    FutureTPTest = None
-    for i in ListeTP:
-        if i.test == '1':
-            FutureTPTest = i
-            break
-    for i in ListeTP:
-        if i.test == '0':
-            FutureTP = i
-            break
-    if FutureTP == None:
-        Label(frame,text="Pas de TP à rendre",justify=LEFT).pack(padx=[0,165])
-    else:
-        Label(frame,text="Futur TP à rendre: {}, {}".format(FutureTP.matiere,FutureTP.date),justify=LEFT).pack(padx=[0,23])
-    if FutureTPTest == None:
-        Label(frame,text="Pas de TP test à venir",justify=LEFT).pack(padx=[0,145])
-    else:
-        Label(frame,text="Future TP test: {}, {}".format(FutureTPTest.matiere,FutureTPTest.date),justify=LEFT).pack(padx=[0,52])
 
 ###Gestion de l'humeur du tamagotchi###
 
@@ -394,7 +337,7 @@ def sysPoint():
         Points +=  (1 - (n/5))*25
     return [Points,NbNonValid]
 
-###Prénom tamagotcho###
+###Options###
 
 def PrenomTamagotchi():
     fenetre = Tk()
@@ -413,6 +356,33 @@ def PrenomTamagotchi():
         f.write(Prenom.get())
         f.close()
 
+def paramCouleur():
+    fenetre = Tk()
+    fenetre.title("Paramètre Couleur")
+    Label(fenetre,text="Paramètre Couleur",bg="#1d3557",fg="#f4ebe8",font=('calibri',20,'bold','underline'),pady=5).grid(row=0,columnspan=3,sticky='nsew')
+    Label(fenetre,text="Couleur",font=('calibri',15,'bold'),justify=LEFT,bg="#c73e1d",fg="#f4ebe8").grid(row=1,column=0,sticky='nsew')
+    Label(fenetre,text="Nouvelle Couleur",font=('calibri',15,'bold'),justify=LEFT,bg="#c73e1d",fg="#f4ebe8").grid(row=1,column=1,sticky='nsew')
+    Label(fenetre,text="Couleur par défaut",font=('calibri',15,'bold'),justify=LEFT,bg="#c73e1d",fg="#f4ebe8").grid(row=1,column=2,sticky='nsew')
+    Label(fenetre,text="Pas fini pour l'instant!").grid(row=2,columnspan=3,sticky='nsew')
+    fenetre.mainloop()
+
+def Config():
+    fenetre = Tk()
+    fenetre.title("Options")
+    Prenom = IntVar()
+    Couleur = IntVar()
+    Label(fenetre,text="Options",bg="#1d3557",fg="#f4ebe8",font=('calibri',20,'bold','underline'),pady=5).grid(row=0,columnspan=2,sticky='nsew')
+    Button(fenetre,text="Changer le prénom",highlightbackground="#1d3557",bg="#c73e1d", fg="#f4ebe8",command=lambda: ActionBouton(fenetre,Prenom)).grid(row=1,column=0,sticky='nsew')
+    Button(fenetre,text="Changer le style",highlightbackground="#1d3557",bg="#c73e1d", fg="#f4ebe8",command=lambda: ActionBouton(fenetre,Couleur)).grid(row=1,column=1,sticky='nsew')
+    fbut = Frame(fenetre,bg='#433e3f')
+    fbut.grid(row=2,columnspan=2,sticky='nswe')
+    Button(fbut,text="Quitter",bg='#d62828',fg="#f4ebe8",highlightbackground='#433e3f',command=fenetre.destroy).pack(padx=5)
+    fenetre.mainloop()
+    if Prenom.get() == 1:
+        PrenomTamagotchi()
+    if Couleur.get() == 1:
+        paramCouleur()
+
 ###fenetre principale###
 
 def MainFenetre():
@@ -429,45 +399,114 @@ def MainFenetre():
     tps = IntVar()
     Projet = IntVar()
     edt = IntVar()
-    #maj = IntVar()
-    #Fenetres
-    f = Frame(fenetre)
-    f.pack()
-    f1 = Frame(f)
-    f2 = LabelFrame(f,text="Informations principales:")
-    f3 = LabelFrame(f,text="Plus d'infomations:")
-    f1.pack(side=LEFT)
-    f2.pack(side=LEFT)
-    f3.pack(side=LEFT)
     RapideTP = IntVar()
-    ModifP = IntVar()
+    Option = IntVar()
     devoir = IntVar()
-    Button(fenetre,text="Quitter",command=fenetre.destroy,fg="red").pack(side = LEFT)
-    #Button(fenetre,text="Mise à jour",command=lambda: ActionBouton(fenetre,maj),bg='red').pack(side=LEFT)
-    Button(fenetre,text="Ajout Rapide TP",command=lambda: ActionBouton(fenetre,RapideTP)).pack(side=RIGHT)
-    Button(fenetre,text="Devoir à faire",command=lambda: ActionBouton(fenetre,devoir)).pack(side=RIGHT)
-    Button(fenetre,text="Emplois du temps",command=lambda: ActionBouton(fenetre,edt)).pack(side=RIGHT)
-    Button(fenetre,text="Modifier le prénom",command=lambda: ActionBouton(fenetre,ModifP)).pack(side=RIGHT)
+    frame1 = Frame(fenetre,bg="#f4ebe8")
+    frame1.pack()
+    frame2 = Frame(frame1,bg="#f4ebe8")
+    frame2.grid(row=0,column=0,sticky='nsew')
+    separation = Frame(frame1,bg="#f4ebe8")
+    separation.grid(row=0,column=1,sticky='nswe')
+    frame3 = Frame(frame1,bg="#f4ebe8")
+    frame3.grid(row=0,column=2,sticky='nsew')
+    #Frame2
+    Label(frame2,text=TamaNom,bg="#1d3557",fg="#f4ebe8",font=('calibri',20,'bold','underline'),pady=5).grid(row=0,sticky='nsew',columnspan=7)
     nbValide = 5 - nonV
     coeffHumeur = [0.75*nbValide*25,0.5*nbValide*25,0.25*nbValide*25]
     if pts >= coeffHumeur[0]:
         humeur = "heureux"
-        TamaContent(f1,"green")
+        TamaContent(frame2,"green")
     elif coeffHumeur[0] > pts >= coeffHumeur[1]:
         humeur = "content"
-        TamaContent(f1,"lime")
+        TamaContent(frame2,"lime")
     elif coeffHumeur[1] > pts >= coeffHumeur[2]:
         humeur = "stressé"
-        TamaMoyen(f1)
+        TamaMoyen(frame2)
     else:
         humeur = "triste"
-        TamaTriste(f1)
-    Informations(f2,humeur)
-    Button(f3,text="Fiche de révision",command=lambda: ActionBouton(fenetre,Fiche),padx=20).pack(padx=10,pady=[6,0])
-    Button(f3,text="Moyenne générale",command=lambda: ActionBouton(fenetre,Moyenne),padx=15).pack()
-    Button(f3,text="Information DS",command=lambda: ActionBouton(fenetre,DS),padx=26.4).pack()
-    Button(f3,text="Information Projet",command=lambda: ActionBouton(fenetre,Projet),padx=15.5).pack()
-    Button(f3,text="Information TP",command=lambda: ActionBouton(fenetre,tps),padx=26.5).pack(pady=[0,6])
+        TamaTriste(frame2)
+    couleur = {"heureux":"green","content":"lime","stressé":"orange","triste":"red"}
+    Button(frame2,text="{} est {}".format(TamaNom,humeur),bg="#f4ebe8",fg=couleur[humeur],bd=0,padx=0,pady=0,activeforeground=couleur[humeur],activebackground=frame2['bg'],command=PtsAffiche,font=('calibri',15)).grid(row=7,columnspan=7,sticky='nswe')
+    #separation '#433e3f' "#c73e1d" #3993dd
+    Label(separation,text="  ",bg="#c73e1d",fg="#f4ebe8",font=('calibri',20,'bold'),pady=5).grid(row=0,sticky='nsew',columnspan=7)
+    for i in range(1,8):
+        Label(separation,text="  ",font=('calibri',15,'bold'),justify=LEFT,bg="#c73e1d",fg="#f4ebe8",pady=4,padx=2).grid(row=i,sticky="nsew")
+    #Frame3
+    Label(frame3,text="Informations principales",bg="#1d3557",fg="#f4ebe8",font=('calibri',20,'bold','underline'),pady=5,padx=18).grid(row=0,columnspan=2,sticky='nsew')
+    ListeFiche = loadCours()
+    comptFiche = 0
+    for i in ListeFiche:
+        if i.aJour == '0' and i.fait == '0':
+            comptFiche += 1
+    Label(frame3,text="Fiche de révision à faire: {}".format(comptFiche),bg="#f4ebe8",font=('calibri',15),justify=LEFT,pady=4).grid(row=1,column=0,sticky='nswe')
+    ListeDevoir = loadDevoir()
+    comptDevoir = len(ListeDevoir)
+    Label(frame3,text="Devoir à faire: {}".format(comptDevoir),bg="#f4ebe8",font=('calibri',15),justify=LEFT,pady=4).grid(row=2,column=0,sticky='nsew')
+    ListeNotes = loadNotes()
+    MoyenneG = CalculeMoyenneG(ListeNotes)
+    if MoyenneG == None:
+        Label(frame3,text="Pas de notes",bg="#f4ebe8",font=('calibri',15),justify=LEFT,pady=4).grid(row=3,column=0,sticky='nsew')
+    else:
+        MoyenneG = round(MoyenneG,2)
+        Label(frame3,text="Moyenne générale: {}/20".format(MoyenneG),bg="#f4ebe8",font=('calibri',15),justify=LEFT,pady=4).grid(row=3,column=0,sticky='nswe')
+    ListeDS = loadDS()
+    ListeDS = DSTri(ListeDS)
+    FutureDS = None
+    for i in ListeDS:
+        if i.fait == '0':
+            FutureDS = i
+            break;
+    if FutureDS == None:
+        Label(frame3,text="Pas de futur DS prévu",bg="#f4ebe8",font=('calibri',15),justify=LEFT,pady=4).grid(row=4,column=0,sticky='nswe')
+    else:
+        Label(frame3,text="Futur DS: {}, {}".format(FutureDS.matiere,FutureDS.date),bg="#f4ebe8",font=('calibri',15),justify=LEFT,pady=4).grid(row=4,column=0,sticky='nswe')
+    ListeProjet = loadProjet()
+    ListeProjet = ProjetTri(ListeProjet)
+    FutureProjet = None
+    for i in ListeProjet:
+        if i.fait == '0':
+            FutureProjet = i
+            break;
+    if FutureProjet == None:
+        Label(frame3,text="Pas de projet à rendre",bg="#f4ebe8",font=('calibri',15),justify=LEFT,pady=4).grid(row=5,column=0,sticky='nswe')
+    else:
+        Label(frame3,text="Future projet à rendre: {}, {}".format(FutureProjet.matiere,FutureProjet.date),bg="#f4ebe8",font=('calibri',15),justify=LEFT,pady=4).grid(row=5,column=0,sticky='nswe')
+    ListeTP = loadTP()
+    ListeTP = TPTri(ListeTP)
+    FutureTP = None
+    FutureTPTest = None
+    for i in ListeTP:
+        if i.test == '1':
+            FutureTPTest = i
+            break
+    for i in ListeTP:
+        if i.test == '0':
+            FutureTP = i
+            break
+    if FutureTP == None:
+        Label(frame3,text="Pas de TP à rendre",bg="#f4ebe8",font=('calibri',15),justify=LEFT,pady=4).grid(row=6,column=0,sticky='nswe')
+    else:
+        Label(frame3,text="Futur TP à rendre: {}, {}".format(FutureTP.matiere,FutureTP.date),bg="#f4ebe8",font=('calibri',15),justify=LEFT,pady=4).grid(row=6,column=0,sticky='nswe')
+    if FutureTPTest == None:
+        Label(frame3,text="Pas de TP test à venir",bg="#f4ebe8",font=('calibri',15),justify=LEFT,pady=4).grid(row=7,column=0,sticky='nswe')
+    else:
+        Label(frame3,text="Future TP test: {}, {}".format(FutureTPTest.matiere,FutureTPTest.date),bg="#f4ebe8",font=('calibri',15),justify=LEFT,pady=4).grid(row=7,column=0,sticky='nswe')
+    frame4 = Frame(frame1,bg="#f4ebe8")
+    frame4.grid(row=1,columnspan=3,sticky='nsew')
+    Label(frame4,text="Plus d'informations",bg="#1d3557",fg="#f4ebe8",font=('calibri',20,'bold','underline'),pady=5,padx=187).grid(row=0,sticky='nsew',columnspan=3)
+    Button(frame4,text="Fiche de révision",highlightbackground="#1d3557",bg="#c73e1d", fg="#f4ebe8",command=lambda: ActionBouton(fenetre,Fiche)).grid(row=1,column=0,sticky='nsew')
+    Button(frame4,text="Informations TP",highlightbackground="#1d3557",bg="#c73e1d", fg="#f4ebe8",command=lambda: ActionBouton(fenetre,tps)).grid(row=1,column=1,sticky='nsew')
+    Button(frame4,text="Devoir à faire",highlightbackground="#1d3557",bg="#c73e1d", fg="#f4ebe8",command=lambda: ActionBouton(fenetre,devoir)).grid(row=1,column=2,sticky='nsew')
+    Button(frame4,text="Informations DS",highlightbackground="#1d3557",bg="#c73e1d", fg="#f4ebe8",command=lambda: ActionBouton(fenetre,DS)).grid(row=2,column=0,sticky='nsew')
+    Button(frame4,text="Informations projets",highlightbackground="#1d3557",bg="#c73e1d", fg="#f4ebe8",command=lambda: ActionBouton(fenetre,Projet)).grid(row=2,column=1,sticky='nsew')
+    Button(frame4,text="Moyenne Générale",highlightbackground="#1d3557",bg="#c73e1d", fg="#f4ebe8",command=lambda: ActionBouton(fenetre,Moyenne)).grid(row=2,column=2,sticky='nsew')
+    fbut = Frame(frame1,bg='#433e3f')
+    fbut.grid(row=2,columnspan=3,sticky='nswe')
+    Button(fbut,text="Quitter",bg='#d62828',fg="#f4ebe8",highlightbackground='#433e3f',command=fenetre.destroy).pack(side=LEFT,pady=10,padx=5)
+    Button(fbut,text="Ajout Rapide TP",highlightbackground='#433e3f',bg="#f4ebe8",command=lambda: ActionBouton(fenetre,RapideTP)).pack(side=RIGHT,pady=10,padx=[0,5])
+    Button(fbut,text="Emploi du temps",highlightbackground='#433e3f',bg="#f4ebe8",command=lambda: ActionBouton(fenetre,edt)).pack(side=RIGHT,pady=10,padx=[0,5])
+    Button(fbut,text="Options",highlightbackground='#433e3f',bg="#f4ebe8",command=lambda: ActionBouton(fenetre,Option)).pack(side=RIGHT,pady=10,padx=[0,5])
     fenetre.mainloop()
     if Fiche.get() == 1:
         MainFenetreFiche()
@@ -491,8 +530,8 @@ def MainFenetre():
             ListeTP.append(TP(insert[0],insert[1],insert[2]))
             saveTP(ListeTP)
         return 1
-    if ModifP.get() == 1:
-        PrenomTamagotchi()
+    if Option.get() == 1:
+        Config()
         return 1
     if devoir.get() == 1:
         MainFenetreDevoir()
