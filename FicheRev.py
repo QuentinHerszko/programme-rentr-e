@@ -107,7 +107,7 @@ def NextDS():
             b = int(time.strptime(i.date,"%d-%m-%Y")[7])
             Jours = b - a 
             if Jours <= 7:
-                MatiereDS = i[0]
+                MatiereDS = i.matiere
                 break
     return MatiereDS
 

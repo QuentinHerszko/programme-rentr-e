@@ -60,7 +60,7 @@ def CalculeMoyenneG(ListeNotes):
     a = 0
     b = 0
     for i in ListeNotes:
-        note = int(i.note)
+        note = float(i.note)
         #a += int(i[1])
         ECTS = int(i.ECTS)
         coeff = ECTS*(int(i.pourcent)/100)
@@ -83,7 +83,7 @@ def verifAjout(matiere,note,pourcentage):
         a = 1
     else:
         showerror("Saisie incorrect","La saisie comporte des espaces, écrire sous la forme: truc_bidule à la place de: truc bidule")
-    if int(note) > 20:
+    if float(note) > 20:
         showerror("Note trop haute","La note {} dépasse 20! C'est pas possible!".format(note))
         b = 0
     if int(pourcentage) > 100:
@@ -184,7 +184,7 @@ def FenetreNote(ListeNotes):
         for j in ListeNotes:
             if i == j.matiere:
                 ECTS = int(j.ECTS)
-                Note = int(j.note)
+                Note = float(j.note)
                 coeff = ECTS*int(j.pourcent)
                 a += (Note/20)*coeff
                 b += coeff

@@ -306,23 +306,17 @@ def sysPoint():
     else:
         NbNonValid += 1
     ListeTP = loadTP()
-    if not(ListeTP == []):
-        comptTP = 0
-        for i in ListeTP:
-            if i.test == '0':
-                comptTP += 1
-        Points += (1-(comptTP/4))*25
-    else:
-        NbNonValid += 1
+    comptTP = 0
+    for i in ListeTP:
+        if i.test == '0':
+            comptTP += 1
+    Points += (1-(comptTP/4))*25
     ListeProjet = loadProjet()
-    if not(ListeProjet == []):
-        comptProjet = 0
-        for i in ListeProjet:
-            if i.fait == '0':
-                comptProjet += 1
-        Points += (1 - comptProjet/6) * 25
-    else:
-        NbNonValid += 1
+    comptProjet = 0
+    for i in ListeProjet:
+        if i.fait == '0':
+            comptProjet += 1
+    Points += (1 - comptProjet/6) * 25
     ListeNotes = loadNotes()
     if ListeNotes == []:
         NbNonValid += 1
@@ -330,11 +324,8 @@ def sysPoint():
         MoyenneG = CalculeMoyenneG(ListeNotes)
         Points += (MoyenneG/20)*25
     ListeDevoir = loadDevoir()
-    if ListeDevoir == []:
-        NbNonValid += 1
-    else:
-        n = len(ListeDevoir)
-        Points +=  (1 - (n/5))*25
+    n = len(ListeDevoir)
+    Points +=  (1 - (n/5))*25
     return [Points,NbNonValid]
 
 ###Options###
@@ -471,7 +462,7 @@ def MainFenetre():
     if FutureProjet == None:
         Label(frame3,text="Pas de projet à rendre",bg="#f4ebe8",font=('calibri',15),justify=LEFT,pady=4).grid(row=5,column=0,sticky='nswe')
     else:
-        Label(frame3,text="Future projet à rendre: {}, {}".format(FutureProjet.matiere,FutureProjet.date),bg="#f4ebe8",font=('calibri',15),justify=LEFT,pady=4).grid(row=5,column=0,sticky='nswe')
+        Label(frame3,text="Futur projet à rendre: {}, {}".format(FutureProjet.matiere,FutureProjet.date),bg="#f4ebe8",font=('calibri',15),justify=LEFT,pady=4).grid(row=5,column=0,sticky='nswe')
     ListeTP = loadTP()
     ListeTP = TPTri(ListeTP)
     FutureTP = None
